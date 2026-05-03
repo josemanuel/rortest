@@ -8,425 +8,270 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Courier+Prime:wght@400;700&family=IM+Fell+English:ital@0;1&display=swap');
 
   :root {
-    --bg: #0d0c0b;
-    --paper: #f2ede6;
-    --ink: #1a1714;
-    --red: #8b1a1a;
-    --gold: #c9a84c;
-    --gray: #6b6560;
-    --light-gray: #d4cfc8;
+    --bg:         #ede8df;
+    --bg2:        #e4ddd3;
+    --surface:    #faf7f2;
+    --border:     #c0b8a8;
+    --ink:        #1c1814;
+    --ink2:       #4a4540;
+    --gold:       #8a6820;
+    --red-light:  rgba(139,26,26,0.10);
+    --red-border: rgba(139,26,26,0.30);
+    --purple:     #5a3e7a;
+    --purple-bg:  rgba(90,62,122,0.10);
+    --shadow:     rgba(0,0,0,0.07);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     background: var(--bg);
-    color: var(--paper);
+    color: var(--ink);
     font-family: 'Courier Prime', monospace;
     min-height: 100vh;
-    overflow-x: hidden;
   }
 
-  /* PANTALLA DE INICIO */
+  /* ── INTRO ── */
   #screen-intro {
     display: flex; flex-direction: column; align-items: center;
     justify-content: center; min-height: 100vh;
-    background: radial-gradient(ellipse at center, #1a1612 0%, #0d0c0b 70%);
-    padding: 40px 20px;
-    text-align: center;
+    background: radial-gradient(ellipse at center, #e8e0d0 0%, #d8d0c0 100%);
+    padding: 40px 20px; text-align: center;
   }
-
   .logo-header {
-    border: 1px solid var(--gold);
-    padding: 40px 60px;
-    max-width: 560px;
-    width: 100%;
+    border: 1px solid var(--gold); padding: 40px 60px;
+    max-width: 560px; width: 100%;
+    background: var(--surface); box-shadow: 0 4px 24px var(--shadow);
     position: relative;
   }
-  .logo-header::before, .logo-header::after {
-    content: '✦';
-    color: var(--gold);
-    position: absolute;
-    font-size: 10px;
-  }
-  .logo-header::before { top: 8px; left: 8px; }
-  .logo-header::after { bottom: 8px; right: 8px; }
-
+  .logo-header::before { content:'✦'; color:var(--gold); position:absolute; top:8px; left:10px; font-size:10px; }
+  .logo-header::after  { content:'✦'; color:var(--gold); position:absolute; bottom:8px; right:10px; font-size:10px; }
   .subtitle-en {
-    font-family: 'Courier Prime', monospace;
-    font-size: 10px;
-    letter-spacing: 4px;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 16px;
+    font-size:10px; letter-spacing:4px; color:var(--gold);
+    text-transform:uppercase; margin-bottom:14px;
   }
-
   h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(36px, 6vw, 56px);
-    font-weight: 700;
-    letter-spacing: -1px;
-    line-height: 1.1;
-    margin-bottom: 8px;
+    font-family:'Playfair Display',serif;
+    font-size:clamp(34px,6vw,52px); font-weight:700;
+    letter-spacing:-1px; line-height:1.1; margin-bottom:6px; color:var(--ink);
   }
-
-  .inkblot-deco {
-    width: 80px; height: 40px;
-    margin: 20px auto;
-    opacity: 0.6;
-  }
-
+  .inkblot-deco { width:70px; height:36px; margin:16px auto; opacity:0.3; }
   .intro-text {
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 15px;
-    color: var(--light-gray);
-    line-height: 1.7;
-    max-width: 420px;
-    margin: 20px auto 30px;
+    font-family:'IM Fell English',serif; font-style:italic;
+    font-size:15px; color:var(--ink2); line-height:1.75;
+    max-width:420px; margin:16px auto 22px;
   }
-
   .disclaimer {
-    background: rgba(139,26,26,0.15);
-    border: 1px solid rgba(139,26,26,0.4);
-    border-radius: 2px;
-    padding: 14px 18px;
-    font-size: 11px;
-    color: #c47070;
-    line-height: 1.6;
-    max-width: 420px;
-    margin: 0 auto 30px;
-    text-align: left;
+    background:var(--red-light); border:1px solid var(--red-border);
+    padding:13px 16px; font-size:11px; color:#7a1010;
+    line-height:1.6; max-width:420px; margin:0 auto 24px; text-align:left;
   }
-
   .btn-primary {
-    background: transparent;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    font-family: 'Courier Prime', monospace;
-    font-size: 13px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    padding: 14px 40px;
-    cursor: pointer;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
+    background:var(--gold); border:1px solid var(--gold); color:#fff;
+    font-family:'Courier Prime',monospace; font-size:13px;
+    letter-spacing:3px; text-transform:uppercase;
+    padding:13px 40px; cursor:pointer; transition:all .25s;
   }
-  .btn-primary::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--gold);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s;
-    z-index: -1;
+  .btn-primary:hover { background:#6a5010; border-color:#6a5010; }
+  .btn-sec {
+    background:transparent; border:1px solid var(--border); color:var(--ink2);
+    font-family:'Courier Prime',monospace; font-size:12px;
+    letter-spacing:2px; padding:10px 22px; cursor:pointer; transition:all .2s;
   }
-  .btn-primary:hover { color: var(--ink); }
-  .btn-primary:hover::before { transform: scaleX(1); }
+  .btn-sec:hover { border-color:var(--ink2); color:var(--ink); }
 
-  /* PANTALLA DEL TEST */
-  #screen-test { display: none; padding: 20px; max-width: 900px; margin: 0 auto; }
+  /* ── TEST SCREEN ── */
+  #screen-test { display:none; padding:20px; max-width:900px; margin:0 auto; }
 
   .progress-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 0; border-bottom: 1px solid #2a2520; margin-bottom: 30px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 0; border-bottom:1px solid var(--border); margin-bottom:26px;
   }
-
-  .lamina-label {
-    font-size: 11px; letter-spacing: 3px;
-    text-transform: uppercase; color: var(--gold);
-  }
-
-  .progress-bar-wrap {
-    flex: 1; height: 2px;
-    background: #2a2520; margin: 0 20px;
-  }
-  .progress-bar-fill {
-    height: 100%; background: var(--gold);
-    transition: width 0.5s ease;
-  }
+  .lamina-label { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); }
+  .progress-bar-wrap { flex:1; height:2px; background:var(--border); margin:0 18px; }
+  .progress-bar-fill { height:100%; background:var(--gold); transition:width .5s ease; }
 
   .card {
-    background: #13120f;
-    border: 1px solid #2a2520;
-    padding: 30px;
-    margin-bottom: 20px;
+    background:var(--surface); border:1px solid var(--border);
+    padding:26px; margin-bottom:20px; box-shadow:0 2px 12px var(--shadow);
   }
 
-  /* IMAGEN LÁMINA */
+  /* ── IMAGEN ── */
   .inkblot-container {
-    display: flex; justify-content: center; align-items: center;
-    background: var(--paper);
-    padding: 30px;
-    margin-bottom: 24px;
-    min-height: 280px;
-    position: relative;
+    display:flex; justify-content:center; align-items:center;
+    background:#ffffff; border:1px solid var(--border);
+    padding:20px; margin-bottom:22px;
+    min-height:300px; position:relative;
   }
   .inkblot-img {
-    max-width: 360px;
-    max-height: 280px;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    filter: drop-shadow(0 4px 20px rgba(0,0,0,0.35));
-    transition: opacity 0.4s ease;
+    max-width:100%; max-height:340px; width:auto; height:auto;
+    object-fit:contain; transition:opacity .5s ease;
   }
-  .inkblot-img.cargando { opacity: 0; }
-  .inkblot-img.cargado  { opacity: 1; }
-
+  .inkblot-img.cargando { opacity:0; }
+  .inkblot-img.cargado  { opacity:1; }
   .img-error {
-    display: none;
-    flex-direction: column; align-items: center; gap: 10px;
-    color: var(--gray); font-size: 12px; text-align: center;
+    display:none; flex-direction:column; align-items:center;
+    gap:10px; color:var(--ink2); font-size:12px; text-align:center;
+    padding:20px;
   }
-  .img-error-icon { font-size: 36px; opacity: 0.4; }
-
-  .inkblot-container.con-error .inkblot-img { display: none; }
-  .inkblot-container.con-error .img-error   { display: flex; }
-
+  .img-error-icon { font-size:40px; opacity:0.3; }
+  .img-error code {
+    background:var(--bg2); padding:3px 8px;
+    font-family:'Courier Prime',monospace; font-size:12px;
+  }
+  .inkblot-container.con-error .inkblot-img { display:none; }
+  .inkblot-container.con-error .img-error   { display:flex; }
   .lamina-num {
-    position: absolute; top: 10px; left: 14px;
-    font-size: 10px; color: var(--gray);
-    letter-spacing: 2px;
+    position:absolute; top:7px; left:11px;
+    font-size:10px; color:var(--border); letter-spacing:2px;
   }
 
-  /* INSTRUCCIONES */
+  /* ── INSTRUCCIÓN ── */
   .instruccion {
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 15px;
-    color: var(--light-gray);
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #2a2520;
+    font-family:'IM Fell English',serif; font-style:italic;
+    font-size:15px; color:var(--ink2);
+    margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border);
   }
 
-  /* CATEGORIAS */
+  /* ── SECCIONES ── */
   .section-label {
-    font-size: 10px; letter-spacing: 3px;
-    text-transform: uppercase; color: var(--gray);
-    margin-bottom: 12px;
+    font-size:10px; letter-spacing:3px; text-transform:uppercase;
+    color:var(--ink2); margin-bottom:9px; margin-top:18px;
   }
 
-  .cat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 8px;
-    margin-bottom: 20px;
-  }
-
-  .cat-btn {
-    background: #1a1714;
-    border: 1px solid #2a2520;
-    color: var(--light-gray);
-    font-family: 'Courier Prime', monospace;
-    font-size: 11px;
-    padding: 8px 10px;
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.2s;
-    letter-spacing: 0.5px;
-  }
-  .cat-btn:hover { border-color: var(--gold); color: var(--gold); }
-  .cat-btn.selected {
-    background: rgba(201,168,76,0.12);
-    border-color: var(--gold);
-    color: var(--gold);
-  }
-
-  /* TEXTO LIBRE */
-  .respuesta-textarea {
-    width: 100%;
-    background: #0d0c0b;
-    border: 1px solid #2a2520;
-    border-radius: 0;
-    color: var(--paper);
-    font-family: 'Courier Prime', monospace;
-    font-size: 13px;
-    padding: 14px;
-    resize: vertical;
-    min-height: 80px;
-    line-height: 1.6;
-    transition: border-color 0.2s;
-    outline: none;
-  }
-  .respuesta-textarea:focus { border-color: var(--gold); }
-  .respuesta-textarea::placeholder { color: #3a3530; }
-
-  /* LOCALIZACION */
-  .loc-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  /* ── LOCALIZACIÓN ── */
+  .loc-grid { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:4px; }
   .loc-btn {
-    background: #1a1714;
-    border: 1px solid #2a2520;
-    color: var(--light-gray);
-    font-family: 'Courier Prime', monospace;
-    font-size: 11px;
-    padding: 7px 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.5px;
+    background:var(--bg2); border:1px solid var(--border); color:var(--ink2);
+    font-family:'Courier Prime',monospace; font-size:11px;
+    padding:7px 15px; cursor:pointer; transition:all .2s;
   }
-  .loc-btn:hover { border-color: #8b6ea0; color: #c9a8e0; }
-  .loc-btn.selected { background: rgba(139,110,160,0.12); border-color: #8b6ea0; color: #c9a8e0; }
+  .loc-btn:hover  { border-color:var(--purple); color:var(--purple); }
+  .loc-btn.selected {
+    background:var(--purple-bg); border-color:var(--purple);
+    color:var(--purple); font-weight:700;
+  }
 
+  /* ── CATEGORÍAS ── */
+  .cat-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(148px, 1fr));
+    gap:7px; margin-bottom:4px;
+  }
+  .cat-btn {
+    background:var(--bg2); border:1px solid var(--border); color:var(--ink2);
+    font-family:'Courier Prime',monospace; font-size:11px;
+    padding:8px 10px; cursor:pointer; text-align:left; transition:all .2s;
+  }
+  .cat-btn:hover  { border-color:var(--gold); color:var(--gold); background:#fff; }
+  .cat-btn.selected {
+    background:rgba(138,104,32,.10); border-color:var(--gold);
+    color:var(--gold); font-weight:700;
+  }
+
+  /* ── TEXTAREA ── */
+  .respuesta-textarea {
+    width:100%; background:#fff; border:1px solid var(--border);
+    color:var(--ink); font-family:'Courier Prime',monospace;
+    font-size:13px; padding:12px; resize:vertical;
+    min-height:80px; line-height:1.6; outline:none; transition:border-color .2s;
+  }
+  .respuesta-textarea:focus { border-color:var(--gold); }
+  .respuesta-textarea::placeholder { color:var(--border); }
+
+  /* ── NAV ── */
   .nav-btns {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-top: 24px;
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:20px; padding-top:16px; border-top:1px solid var(--border);
   }
+  .timer-display { font-size:12px; color:var(--ink2); letter-spacing:2px; }
 
-  .btn-sec {
-    background: transparent;
-    border: 1px solid #2a2520;
-    color: var(--gray);
-    font-family: 'Courier Prime', monospace;
-    font-size: 12px;
-    letter-spacing: 2px;
-    padding: 10px 24px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-sec:hover { border-color: var(--gray); color: var(--paper); }
-
-  .timer-display {
-    font-size: 11px; color: var(--gray); letter-spacing: 2px;
-  }
-
-  /* PANTALLA INFORME */
-  #screen-report { display: none; padding: 20px; max-width: 860px; margin: 0 auto; }
+  /* ── INFORME ── */
+  #screen-report { display:none; padding:20px; max-width:860px; margin:0 auto; }
 
   .report-header {
-    border: 1px solid var(--gold);
-    padding: 30px;
-    margin-bottom: 30px;
-    text-align: center;
-    position: relative;
+    border:1px solid var(--gold); padding:28px; margin-bottom:20px;
+    text-align:center; background:var(--surface); box-shadow:0 2px 12px var(--shadow);
   }
   .report-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 28px; font-weight: 700; margin-bottom: 6px;
+    font-family:'Playfair Display',serif;
+    font-size:28px; font-weight:700; margin-bottom:5px; color:var(--ink);
   }
-  .report-subtitle {
-    font-size: 10px; letter-spacing: 3px;
-    text-transform: uppercase; color: var(--gold);
-  }
-  .report-date {
-    font-size: 11px; color: var(--gray); margin-top: 8px;
-  }
+  .report-subtitle { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); }
+  .report-date     { font-size:11px; color:var(--ink2); margin-top:7px; }
 
   .report-section {
-    background: #13120f;
-    border: 1px solid #2a2520;
-    padding: 24px;
-    margin-bottom: 16px;
+    background:var(--surface); border:1px solid var(--border);
+    padding:22px; margin-bottom:14px; box-shadow:0 2px 8px var(--shadow);
   }
   .report-section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 16px;
-    margin-bottom: 16px;
-    color: var(--gold);
-    border-bottom: 1px solid #2a2520;
-    padding-bottom: 10px;
+    font-family:'Playfair Display',serif; font-size:16px;
+    margin-bottom:16px; color:var(--gold);
+    border-bottom:1px solid var(--border); padding-bottom:9px;
   }
 
-  .dim-bars { display: flex; flex-direction: column; gap: 12px; }
-
-  .dim-row { display: flex; align-items: center; gap: 12px; }
-  .dim-name {
-    font-size: 11px; letter-spacing: 1px;
-    color: var(--light-gray); width: 160px; flex-shrink: 0;
-  }
-  .dim-bar-bg {
-    flex: 1; height: 6px; background: #2a2520; position: relative;
-  }
-  .dim-bar-fill {
-    height: 100%; background: var(--gold);
-    transition: width 1s ease;
-  }
-  .dim-val {
-    font-size: 11px; color: var(--gray);
-    width: 36px; text-align: right;
+  /* Barras */
+  .dim-block   { margin-bottom:14px; }
+  .dim-row     { display:flex; align-items:center; gap:10px; }
+  .dim-name    { font-size:11px; color:var(--ink2); width:190px; flex-shrink:0; }
+  .dim-bar-bg  { flex:1; height:7px; background:var(--bg2); border:1px solid var(--border); }
+  .dim-bar-fill{ height:100%; background:var(--gold); transition:width 1.1s ease; }
+  .dim-val     { font-size:11px; color:var(--ink2); width:34px; text-align:right; }
+  .dim-labels  {
+    display:flex; justify-content:space-between;
+    font-size:9px; color:var(--border); margin-top:2px;
+    padding-left:200px;
   }
 
+  /* Narrativa */
   .narrative-text {
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 15px;
-    line-height: 1.8;
-    color: var(--light-gray);
+    font-family:'IM Fell English',serif; font-style:italic;
+    font-size:15px; line-height:1.85; color:var(--ink2);
   }
 
+  /* Registro */
   .respuestas-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 10px;
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:10px;
   }
   .resp-card {
-    background: #0d0c0b;
-    border: 1px solid #2a2520;
-    padding: 12px;
-    font-size: 11px;
-    line-height: 1.5;
+    background:var(--bg2); border:1px solid var(--border);
+    padding:12px; font-size:11px; line-height:1.5; color:var(--ink2);
   }
-  .resp-card-num {
-    font-size: 9px; letter-spacing: 2px;
-    color: var(--gold); margin-bottom: 5px;
-  }
-  .resp-card-cats {
-    color: var(--gray); font-size: 10px; margin-top: 4px;
-  }
+  .resp-card-num { font-size:9px; letter-spacing:2px; color:var(--gold); margin-bottom:5px; font-weight:700; }
+  .resp-card-cats { font-size:10px; margin-top:5px; opacity:.75; }
 
   .disclaimer-report {
-    border: 1px solid #2a2520;
-    padding: 14px;
-    font-size: 11px;
-    color: var(--gray);
-    line-height: 1.6;
-    margin-top: 20px;
+    border:1px solid var(--border); background:var(--bg2);
+    padding:14px; font-size:11px; color:var(--ink2);
+    line-height:1.6; margin-top:14px;
   }
-
   .btn-reiniciar {
-    display: block; margin: 30px auto 0;
-    background: transparent;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    font-family: 'Courier Prime', monospace;
-    font-size: 12px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    padding: 14px 40px;
-    cursor: pointer;
-    transition: all 0.3s;
+    display:block; margin:22px auto 0;
+    background:var(--gold); border:1px solid var(--gold); color:#fff;
+    font-family:'Courier Prime',monospace; font-size:12px;
+    letter-spacing:3px; text-transform:uppercase;
+    padding:13px 40px; cursor:pointer; transition:all .25s;
   }
-  .btn-reiniciar:hover { background: var(--gold); color: var(--ink); }
+  .btn-reiniciar:hover { background:#6a5010; }
 
-  /* Animaciones */
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
   }
-  .fade-in { animation: fadeIn 0.5s ease forwards; }
-
-  @keyframes inkDrop {
-    0% { opacity: 0; transform: scale(0.8); }
-    60% { opacity: 1; transform: scale(1.03); }
-    100% { opacity: 1; transform: scale(1); }
-  }
-  .ink-anim { animation: inkDrop 0.7s ease forwards; }
+  .fade-in { animation:fadeIn .45s ease forwards; }
 </style>
 </head>
 <body>
 
-<!-- INTRO -->
+<!-- ══ INTRO ════════════════════════════════════════ -->
 <div id="screen-intro">
   <div class="logo-header">
-    <div class="subtitle-en">Psychodiagnostic Inkblot Test</div>
+    <div class="subtitle-en">Psychodiagnostic Inkblot Test · 1921</div>
     <h1>Test de<br>Rorschach</h1>
-    <svg class="inkblot-deco" viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="40" cy="20" rx="18" ry="14" fill="#c9a84c" opacity="0.5"/>
-      <ellipse cx="28" cy="14" rx="9" ry="6" fill="#c9a84c" opacity="0.4"/>
-      <ellipse cx="52" cy="14" rx="9" ry="6" fill="#c9a84c" opacity="0.4"/>
+    <svg class="inkblot-deco" viewBox="0 0 70 36" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="35" cy="18" rx="15" ry="11" fill="#8a6820" opacity=".55"/>
+      <ellipse cx="24" cy="13" rx="8"  ry="5"  fill="#8a6820" opacity=".4"/>
+      <ellipse cx="46" cy="13" rx="8"  ry="5"  fill="#8a6820" opacity=".4"/>
     </svg>
     <p class="intro-text">
       Desarrollado por Hermann Rorschach en 1921, este test proyectivo explora los procesos perceptivos y asociativos a través de manchas de tinta ambiguas.
@@ -438,7 +283,7 @@
   </div>
 </div>
 
-<!-- TEST -->
+<!-- ══ TEST ══════════════════════════════════════════ -->
 <div id="screen-test">
   <div class="progress-header">
     <span class="lamina-label" id="lamina-label">Lámina I</span>
@@ -448,42 +293,48 @@
     <span class="lamina-label" id="lamina-counter">1 / 10</span>
   </div>
 
-  <div class="card fade-in" id="main-card">
-    <div class="inkblot-container">
+  <div class="card fade-in">
+    <!-- Imagen -->
+    <div class="inkblot-container" id="inkblot-container">
       <span class="lamina-num" id="lamina-num-label">I</span>
-      <img id="inkblot-img" class="inkblot-img cargando" src="" alt="Lámina del Test de Rorschach"/>
+      <img id="inkblot-img" class="inkblot-img cargando" src="" alt="Lámina Rorschach"/>
       <div class="img-error" id="img-error">
         <span class="img-error-icon">🖼</span>
-        <span>Imagen no encontrada.<br>Coloca <strong id="img-error-name"></strong> en el mismo directorio que este HTML.</span>
+        <p>Imagen no encontrada:<br><code id="img-error-name"></code></p>
+        <p style="font-size:10px;opacity:.6">Coloca los archivos 1.jpg … 10.jpg en el mismo directorio que este HTML.</p>
       </div>
     </div>
 
     <p class="instruccion">"Dígame qué podría ser esto. No hay respuestas correctas o incorrectas."</p>
 
+    <!-- Localización -->
     <div class="section-label">Localización — ¿Qué parte de la mancha observa?</div>
-    <div class="loc-grid" id="loc-grid">
+    <div class="loc-grid">
       <button class="loc-btn" onclick="toggleLoc(this,'W')">W — Global</button>
       <button class="loc-btn" onclick="toggleLoc(this,'D')">D — Detalle mayor</button>
       <button class="loc-btn" onclick="toggleLoc(this,'Dd')">Dd — Detalle menor</button>
       <button class="loc-btn" onclick="toggleLoc(this,'S')">S — Espacio blanco</button>
     </div>
 
-    <div class="section-label">Contenido — ¿Qué ve?</div>
+    <!-- Categorías -->
+    <div class="section-label">Contenido — ¿Qué ve? (puede seleccionar varias)</div>
     <div class="cat-grid" id="cat-grid"></div>
 
+    <!-- Texto libre -->
     <div class="section-label">Descripción libre</div>
     <textarea class="respuesta-textarea" id="respuesta-text"
       placeholder="Describa con sus propias palabras lo que percibe en esta imagen..."></textarea>
 
+    <!-- Nav -->
     <div class="nav-btns">
-      <button class="btn-sec" id="btn-anterior" onclick="irAnterior()">← Anterior</button>
+      <button class="btn-sec" id="btn-anterior" onclick="irAnterior()" style="visibility:hidden">← Anterior</button>
       <span class="timer-display" id="timer-display">00:00</span>
       <button class="btn-primary" id="btn-siguiente" onclick="irSiguiente()">Siguiente →</button>
     </div>
   </div>
 </div>
 
-<!-- INFORME -->
+<!-- ══ INFORME ═══════════════════════════════════════ -->
 <div id="screen-report">
   <div class="report-header fade-in">
     <div class="report-subtitle">Informe Psicológico Proyectivo</div>
@@ -492,8 +343,8 @@
   </div>
 
   <div class="report-section fade-in">
-    <div class="report-section-title">Perfil por Dimensiones</div>
-    <div class="dim-bars" id="dim-bars"></div>
+    <div class="report-section-title">Perfil por Dimensiones Psicológicas</div>
+    <div id="dim-bars"></div>
   </div>
 
   <div class="report-section fade-in">
@@ -507,146 +358,131 @@
   </div>
 
   <div class="disclaimer-report">
-    <strong>Aviso importante:</strong> Este informe es de carácter educativo y exploratorio. Las interpretaciones presentadas están basadas en asociaciones clásicas de la psicología proyectiva y NO constituyen un diagnóstico clínico. Los sistemas de puntuación validados (Exner, R-PAS) requieren administración e interpretación por psicólogos especializados. No tome decisiones basadas en este resultado.
+    <strong>Aviso importante:</strong> Este informe es de carácter educativo y exploratorio.
+    Las interpretaciones presentadas se basan en asociaciones clásicas de la psicología proyectiva
+    y <strong>NO</strong> constituyen un diagnóstico clínico. Los sistemas de puntuación validados
+    (Exner, R-PAS) requieren administración e interpretación por psicólogos especializados.
   </div>
-
-  <button class="btn-reiniciar" onclick="reiniciar()">↺ Reiniciar Evaluación</button>
+  <button class="btn-reiniciar" onclick="reiniciar()">↺ Nueva Evaluación</button>
 </div>
 
 <script>
-// ============================================================
-// DATOS DE LAS LÁMINAS
-// ============================================================
+// ════════════════════════════════════════
+// DATOS
+// ════════════════════════════════════════
 const LAMINAS = [
-  {
-    num: 'I', nombre: 'Lámina I',
-    colores: ['#1a1714'],
-    tipo: 'bilateral', seed: 101,
-    popularRes: 'Murciélago, mariposa, máscara'
-  },
-  {
-    num: 'II', nombre: 'Lámina II',
-    colores: ['#1a1714', '#7a1a1a'],
-    tipo: 'bilateral_rojo', seed: 202,
-    popularRes: 'Dos personas, mariposa, perro'
-  },
-  {
-    num: 'III', nombre: 'Lámina III',
-    colores: ['#1a1714', '#8b1a1a'],
-    tipo: 'bilateral_rojo2', seed: 303,
-    popularRes: 'Dos figuras humanas, lazo, mariposa'
-  },
-  {
-    num: 'IV', nombre: 'Lámina IV',
-    colores: ['#111010'],
-    tipo: 'grande_oscuro', seed: 404,
-    popularRes: 'Figura imponente, gigante, animal grande'
-  },
-  {
-    num: 'V', nombre: 'Lámina V',
-    colores: ['#1a1714'],
-    tipo: 'mariposa', seed: 505,
-    popularRes: 'Murciélago, mariposa, ave'
-  },
-  {
-    num: 'VI', nombre: 'Lámina VI',
-    colores: ['#1a1714'],
-    tipo: 'vertical', seed: 606,
-    popularRes: 'Piel de animal, totem, insecto'
-  },
-  {
-    num: 'VII', nombre: 'Lámina VII',
-    colores: ['#2a2520'],
-    tipo: 'nubes', seed: 707,
-    popularRes: 'Cabezas humanas, mujeres, conejo'
-  },
-  {
-    num: 'VIII', nombre: 'Lámina VIII',
-    colores: ['#4a6741', '#c48040', '#6b5080'],
-    tipo: 'color_lateral', seed: 808,
-    popularRes: 'Animal trepando, oso, camaleón'
-  },
-  {
-    num: 'IX', nombre: 'Lámina IX',
-    colores: ['#7a4a20', '#4a6040', '#b07030'],
-    tipo: 'color_central', seed: 909,
-    popularRes: 'Bruja, ogro, explosión'
-  },
-  {
-    num: 'X', nombre: 'Lámina X',
-    colores: ['#3a5a8a', '#4a8a4a', '#8a7a20', '#8a3a6a'],
-    tipo: 'color_multiple', seed: 1010,
-    popularRes: 'Arañas, cangrejos, insectos, flores'
-  }
+  { num:'I',    nombre:'Lámina I' },
+  { num:'II',   nombre:'Lámina II' },
+  { num:'III',  nombre:'Lámina III' },
+  { num:'IV',   nombre:'Lámina IV' },
+  { num:'V',    nombre:'Lámina V' },
+  { num:'VI',   nombre:'Lámina VI' },
+  { num:'VII',  nombre:'Lámina VII' },
+  { num:'VIII', nombre:'Lámina VIII' },
+  { num:'IX',   nombre:'Lámina IX' },
+  { num:'X',    nombre:'Lámina X' },
 ];
 
 const CATEGORIAS = [
-  { id: 'H', label: '👤 Figura humana', dim: 'social' },
-  { id: 'Hd', label: '🫂 Parte humana', dim: 'social' },
-  { id: 'A', label: '🐾 Animal completo', dim: 'convencional' },
-  { id: 'Ad', label: '🦷 Parte animal', dim: 'convencional' },
-  { id: 'An', label: '🫀 Anatomía', dim: 'ansiedad' },
-  { id: 'Sx', label: '⚡ Sexual', dim: 'impulso' },
-  { id: 'Bl', label: '🩸 Sangre', dim: 'ansiedad' },
-  { id: 'Fire', label: '🔥 Fuego/Explosión', dim: 'impulso' },
-  { id: 'Nat', label: '🌿 Naturaleza', dim: 'recursos' },
-  { id: 'Geo', label: '🗺 Geografía/Mapa', dim: 'recursos' },
-  { id: 'Obj', label: '🔧 Objeto/Herramienta', dim: 'control' },
-  { id: 'Arq', label: '🏛 Arquitectura', dim: 'control' },
-  { id: 'Simbolo', label: '✨ Símbolo/Emblema', dim: 'abstraccion' },
-  { id: 'Abs', label: '🌀 Abstracto', dim: 'abstraccion' },
-  { id: 'Mito', label: '🐉 Monstruo/Mitología', dim: 'fantasia' },
-  { id: 'Sci', label: '🔭 Ciencia/Espacio', dim: 'fantasia' },
+  { id:'H',    label:'👤 Figura humana',       dim:'social' },
+  { id:'Hd',   label:'🫂 Parte humana',         dim:'social' },
+  { id:'A',    label:'🐾 Animal completo',      dim:'convencional' },
+  { id:'Ad',   label:'🦷 Parte animal',         dim:'convencional' },
+  { id:'An',   label:'🫀 Anatomía',             dim:'ansiedad' },
+  { id:'Sx',   label:'⚡ Sexual',               dim:'impulso' },
+  { id:'Bl',   label:'🩸 Sangre',               dim:'ansiedad' },
+  { id:'Fire', label:'🔥 Fuego / Explosión',    dim:'impulso' },
+  { id:'Nat',  label:'🌿 Naturaleza',            dim:'recursos' },
+  { id:'Geo',  label:'🗺 Geografía / Mapa',      dim:'recursos' },
+  { id:'Obj',  label:'🔧 Objeto / Herramienta',  dim:'control' },
+  { id:'Arq',  label:'🏛 Arquitectura',          dim:'control' },
+  { id:'Sim',  label:'✨ Símbolo / Emblema',     dim:'abstraccion' },
+  { id:'Abs',  label:'🌀 Abstracto',             dim:'abstraccion' },
+  { id:'Mito', label:'🐉 Monstruo / Mito',       dim:'fantasia' },
+  { id:'Sci',  label:'🔭 Ciencia / Espacio',     dim:'fantasia' },
 ];
 
 const DIMS = [
-  { key: 'social', label: 'Orientación Social', low: 'Tendencia al aislamiento', high: 'Alta empatía y sociabilidad' },
-  { key: 'convencional', label: 'Pensamiento Convencional', low: 'Originalidad / pensamiento divergente', high: 'Respuestas populares, adaptación social' },
-  { key: 'ansiedad', label: 'Tensión Interna', low: 'Calma emocional', high: 'Sensibilidad emocional elevada' },
-  { key: 'impulso', label: 'Vitalidad / Impulso', low: 'Contención afectiva', high: 'Expresividad y vitalidad' },
-  { key: 'recursos', label: 'Recursos Adaptativos', low: 'Recursos limitados / introspección', high: 'Amplitud de intereses' },
-  { key: 'control', label: 'Control y Estructura', low: 'Pensamiento fluido / flexible', high: 'Necesidad de orden y estructura' },
-  { key: 'abstraccion', label: 'Abstracción / Simbolismo', low: 'Orientación concreta', high: 'Alto nivel de simbolización' },
-  { key: 'fantasia', label: 'Creatividad / Fantasía', low: 'Orientación realista', high: 'Riqueza imaginativa' },
+  { key:'social',       label:'Orientación Social',       low:'Introversión / autonomía',       high:'Empatía / sociabilidad' },
+  { key:'convencional', label:'Pensamiento Convencional', low:'Originalidad / divergencia',      high:'Adaptación / popularidad' },
+  { key:'ansiedad',     label:'Tensión Interna',          low:'Calma emocional',                 high:'Sensibilidad afectiva' },
+  { key:'impulso',      label:'Vitalidad / Impulso',      low:'Contención afectiva',             high:'Expresividad / vitalidad' },
+  { key:'recursos',     label:'Recursos Adaptativos',     low:'Estilo focalizado',               high:'Amplitud de intereses' },
+  { key:'control',      label:'Control y Estructura',     low:'Pensamiento flexible',            high:'Necesidad de orden' },
+  { key:'abstraccion',  label:'Abstracción / Simbolismo', low:'Orientación concreta',            high:'Alto simbolismo' },
+  { key:'fantasia',     label:'Creatividad / Fantasía',   low:'Orientación realista',            high:'Riqueza imaginativa' },
 ];
 
-
-// ============================================================
-// ESTADO DE LA APP
-// ============================================================
-let laminaActual = 0;
-let respuestas = [];
+// ════════════════════════════════════════
+// ESTADO
+// ════════════════════════════════════════
+let laminaActual  = 0;
+let respuestas    = [];
 let timerInterval = null;
-let tiempoInicio = null;
+let tiempoInicio  = null;
 
-// ============================================================
-// INICIALIZACIÓN
-// ============================================================
+// ════════════════════════════════════════
+// INICIO
+// ════════════════════════════════════════
 function iniciarTest() {
-  respuestas = LAMINAS.map(() => ({ categorias: [], localizacion: null, texto: '', tiempo: 0 }));
+  respuestas = LAMINAS.map(() => ({ categorias:[], localizacion:null, texto:'', tiempo:0 }));
   document.getElementById('screen-intro').style.display = 'none';
-  document.getElementById('screen-test').style.display = 'block';
+  document.getElementById('screen-test').style.display  = 'block';
   laminaActual = 0;
   renderLamina(0);
 }
 
+// ════════════════════════════════════════
+// RENDER LÁMINA
+// ════════════════════════════════════════
 function renderLamina(idx) {
-  const lamina = LAMINAS[idx];
-  document.getElementById('lamina-label').textContent = lamina.nombre;
-  document.getElementById('lamina-counter').textContent = `${idx + 1} / 10`;
-  document.getElementById('lamina-num-label').textContent = lamina.num;
-  document.getElementById('progress-bar').style.width = `${(idx / 10) * 100}%`;
+  const lam = LAMINAS[idx];
+
+  document.getElementById('lamina-label').textContent     = lam.nombre;
+  document.getElementById('lamina-counter').textContent   = `${idx + 1} / 10`;
+  document.getElementById('lamina-num-label').textContent = lam.num;
+  document.getElementById('progress-bar').style.width     = `${(idx / 10) * 100}%`;
   document.getElementById('btn-anterior').style.visibility = idx === 0 ? 'hidden' : 'visible';
-  document.getElementById('btn-siguiente').textContent = idx === 9 ? 'Ver Informe →' : 'Siguiente →';
+  document.getElementById('btn-siguiente').textContent    = idx === 9 ? 'Ver Informe →' : 'Siguiente →';
 
-  // Cargar imagen real
-  const img = document.getElementById('inkblot-img');
+  // —— Imagen ——————————————————————————
+  cargarImagen(idx);
+
+  // —— Categorías ——————————————————————
+  const catGrid = document.getElementById('cat-grid');
+  catGrid.innerHTML = '';
+  CATEGORIAS.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className   = 'cat-btn';
+    btn.textContent = cat.label;
+    if (respuestas[idx].categorias.includes(cat.id)) btn.classList.add('selected');
+    btn.addEventListener('click', () => toggleCat(btn, cat.id, idx));
+    catGrid.appendChild(btn);
+  });
+
+  // —— Localización ————————————————————
+  document.querySelectorAll('.loc-btn').forEach(btn => {
+    const key = btn.textContent.split('—')[0].trim(); // "W", "D", etc.
+    btn.classList.toggle('selected', key === respuestas[idx].localizacion);
+  });
+
+  // —— Texto libre ——————————————————————
+  document.getElementById('respuesta-text').value = respuestas[idx].texto;
+
+  // —— Timer ————————————————————————————
+  clearInterval(timerInterval);
+  tiempoInicio  = Date.now() - respuestas[idx].tiempo * 1000;
+  timerInterval = setInterval(tickTimer, 1000);
+  tickTimer();
+}
+
+function cargarImagen(idx) {
+  const img       = document.getElementById('inkblot-img');
   const container = document.getElementById('inkblot-container');
-  const errDiv = document.getElementById('img-error');
-  const errName = document.getElementById('img-error-name');
-  const fileName = `${idx + 1}.jpg`;
+  const errName   = document.getElementById('img-error-name');
+  const fileName  = `${idx + 1}.jpg`;
 
-  // Reset estado
+  // Resetear estado visual
   img.classList.remove('cargado');
   img.classList.add('cargando');
   container.classList.remove('con-error');
@@ -654,242 +490,220 @@ function renderLamina(idx) {
   img.onload = () => {
     img.classList.remove('cargando');
     img.classList.add('cargado');
-    container.classList.remove('con-error');
   };
   img.onerror = () => {
     container.classList.add('con-error');
     errName.textContent = fileName;
   };
 
-  img.src = fileName;
-
-  // Categorías
-  const catGrid = document.getElementById('cat-grid');
-  catGrid.innerHTML = '';
-  CATEGORIAS.forEach(cat => {
-    const btn = document.createElement('button');
-    btn.className = 'cat-btn';
-    btn.textContent = cat.label;
-    btn.dataset.id = cat.id;
-    if (respuestas[idx].categorias.includes(cat.id)) btn.classList.add('selected');
-    btn.onclick = () => toggleCat(btn, cat.id, idx);
-    catGrid.appendChild(btn);
-  });
-
-  // Localización
-  document.querySelectorAll('.loc-btn').forEach(btn => {
-    btn.classList.toggle('selected', btn.textContent.startsWith(respuestas[idx].localizacion));
-  });
-
-  // Texto
-  document.getElementById('respuesta-text').value = respuestas[idx].texto;
-
-  // Timer
-  clearInterval(timerInterval);
-  tiempoInicio = Date.now() - respuestas[idx].tiempo * 1000;
-  timerInterval = setInterval(updateTimer, 1000);
-  updateTimer();
+  // Limpiar src antes para forzar recarga
+  img.src = '';
+  requestAnimationFrame(() => { img.src = fileName; });
 }
 
-function updateTimer() {
+// ════════════════════════════════════════
+// INTERACCIONES
+// ════════════════════════════════════════
+function tickTimer() {
   const elapsed = Math.floor((Date.now() - tiempoInicio) / 1000);
   respuestas[laminaActual].tiempo = elapsed;
-  const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
-  const s = String(elapsed % 60).padStart(2, '0');
+  const m = String(Math.floor(elapsed / 60)).padStart(2,'0');
+  const s = String(elapsed % 60).padStart(2,'0');
   document.getElementById('timer-display').textContent = `${m}:${s}`;
 }
 
 function toggleCat(btn, id, idx) {
-  const r = respuestas[idx];
-  if (r.categorias.includes(id)) {
-    r.categorias = r.categorias.filter(c => c !== id);
+  const cats = respuestas[idx].categorias;
+  if (cats.includes(id)) {
+    respuestas[idx].categorias = cats.filter(c => c !== id);
     btn.classList.remove('selected');
   } else {
-    r.categorias.push(id);
+    cats.push(id);
     btn.classList.add('selected');
   }
 }
 
 function toggleLoc(btn, loc) {
   const current = respuestas[laminaActual].localizacion;
+  document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('selected'));
   if (current === loc) {
     respuestas[laminaActual].localizacion = null;
-    btn.classList.remove('selected');
   } else {
     respuestas[laminaActual].localizacion = loc;
-    document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
   }
 }
 
-function guardarRespuestaActual() {
+function guardarActual() {
   respuestas[laminaActual].texto = document.getElementById('respuesta-text').value;
 }
 
 function irSiguiente() {
-  guardarRespuestaActual();
+  guardarActual();
   if (laminaActual < 9) {
     laminaActual++;
     renderLamina(laminaActual);
+    window.scrollTo(0,0);
   } else {
     mostrarInforme();
   }
 }
 
 function irAnterior() {
-  guardarRespuestaActual();
+  guardarActual();
   if (laminaActual > 0) {
     laminaActual--;
     renderLamina(laminaActual);
+    window.scrollTo(0,0);
   }
 }
 
-// ============================================================
+// ════════════════════════════════════════
 // INFORME
-// ============================================================
-function calcularDimensiones() {
-  const scores = {};
-  DIMS.forEach(d => scores[d.key] = 0);
-  const counts = {};
-  DIMS.forEach(d => counts[d.key] = 0);
+// ════════════════════════════════════════
+function calcularDims() {
+  const sc = {};
+  DIMS.forEach(d => { sc[d.key] = 0; });
 
   respuestas.forEach(r => {
-    r.categorias.forEach(catId => {
-      const cat = CATEGORIAS.find(c => c.id === catId);
-      if (cat) {
-        scores[cat.dim] = (scores[cat.dim] || 0) + 1;
-      }
+    r.categorias.forEach(id => {
+      const cat = CATEGORIAS.find(c => c.id === id);
+      if (cat) sc[cat.dim] += 1;
     });
-  });
-
-  // Localización aporta a control y convencional
-  respuestas.forEach(r => {
-    if (r.localizacion === 'W') scores.convencional += 0.5;
-    if (r.localizacion === 'D') scores.control += 0.3;
-    if (r.localizacion === 'Dd') scores.abstraccion += 0.4;
-    if (r.localizacion === 'S') scores.fantasia += 0.3;
-  });
-
-  // Texto libre: longitud aporta a recursos y elaboración
-  respuestas.forEach(r => {
+    if (r.localizacion === 'W')  sc.convencional += 0.5;
+    if (r.localizacion === 'D')  sc.control      += 0.3;
+    if (r.localizacion === 'Dd') sc.abstraccion  += 0.4;
+    if (r.localizacion === 'S')  sc.fantasia     += 0.3;
     const words = r.texto.trim().split(/\s+/).filter(Boolean).length;
-    scores.recursos += Math.min(words * 0.1, 1.5);
-    scores.social += Math.min(words * 0.05, 0.8);
+    sc.recursos += Math.min(words * 0.10, 1.5);
+    sc.social   += Math.min(words * 0.05, 0.8);
   });
 
-  // Normalizar a 0-100
-  const normalized = {};
-  const maxPosible = 8;
-  DIMS.forEach(d => {
-    normalized[d.key] = Math.min(Math.round((scores[d.key] / maxPosible) * 100), 100);
-  });
-  return normalized;
+  const tiempoMedio = respuestas.reduce((a,r) => a + r.tiempo, 0) / 10;
+  if (tiempoMedio > 60) sc.control += 1;
+
+  const MAX = 9;
+  const norm = {};
+  DIMS.forEach(d => { norm[d.key] = Math.min(Math.round((sc[d.key] / MAX) * 100), 100); });
+  return norm;
 }
 
 function generarNarrativa(dims) {
-  let text = '';
+  const p = [];
+  if (dims.social > 60)
+    p.push('La persona muestra una marcada orientación hacia las relaciones humanas, con probable facilidad para la empatía y el contacto social.');
+  else if (dims.social < 30)
+    p.push('Se observa una tendencia hacia la autonomía y el procesamiento interno, con posible preferencia por espacios de soledad o introspección.');
+  else
+    p.push('El balance entre orientación social e introversión sugiere una adaptación flexible al entorno interpersonal.');
 
-  // Social
-  if (dims.social > 60) text += 'La persona muestra una marcada orientación hacia las relaciones humanas, con probable facilidad para la empatía y el contacto social. ';
-  else if (dims.social < 30) text += 'Se observa una tendencia hacia la autonomía y el procesamiento interno, con posible preferencia por espacios de soledad o introspección. ';
-  else text += 'El balance entre orientación social e introversión sugiere una adaptación flexible al entorno interpersonal. ';
+  if (dims.convencional > 60)
+    p.push('Predominan respuestas de alta popularidad, lo que indica buena adaptación a las normas sociales y pensamiento práctico.');
+  else if (dims.convencional < 30)
+    p.push('La originalidad de las asociaciones puede señalar creatividad, pensamiento divergente o una perspectiva singular del mundo.');
+  else
+    p.push('Se combinan respuestas convencionales con asociaciones más personales, señalando equilibrio entre norma y originalidad.');
 
-  // Convencional
-  if (dims.convencional > 60) text += 'Predominan respuestas de alta popularidad, indicando buena adaptación a las normas sociales y pensamiento práctico. ';
-  else if (dims.convencional < 30) text += 'La originalidad de las asociaciones puede señalar creatividad, pensamiento divergente o una perspectiva singular del mundo. ';
-  else text += 'Se combinan respuestas convencionales con asociaciones más personales, señalando equilibrio entre norma y originalidad. ';
+  if (dims.ansiedad > 50)
+    p.push('Emergen indicadores de tensión interna o sensibilidad emocional elevada, posiblemente relacionados con preocupaciones somáticas o afectivas.');
+  else
+    p.push('El nivel de tensión interna parece contenido, con un procesamiento emocional relativamente estable.');
 
-  // Ansiedad
-  if (dims.ansiedad > 50) text += 'Emergen indicadores de tensión interna o sensibilidad emocional elevada, posiblemente relacionados con preocupaciones somáticas o afectivas. ';
-  else text += 'El nivel de tensión interna parece contenido, con procesamiento emocional relativamente estable. ';
+  if (dims.impulso > 50)
+    p.push('Se percibe vitalidad expresiva y dinamismo afectivo, con probable riqueza en la vida emocional.');
+  else
+    p.push('La contención afectiva observada puede reflejar control emocional o preferencia por la moderación expresiva.');
 
-  // Impulso
-  if (dims.impulso > 50) text += 'Se percibe vitalidad expresiva y dinamismo afectivo, con probable riqueza en la vida emocional. ';
-  else text += 'La contención afectiva observada puede reflejar control emocional o preferencia por la moderación. ';
+  if (dims.recursos > 55)
+    p.push('La amplitud de asociaciones sugiere buena disponibilidad de recursos psicológicos y apertura a experiencias diversas.');
+  else
+    p.push('El número de asociaciones y su elaboración verbal apuntan hacia un estilo más focalizado o selectivo.');
 
-  // Recursos
-  if (dims.recursos > 55) text += 'La amplitud de asociaciones sugiere buena disponibilidad de recursos psicológicos y apertura a experiencias diversas. ';
-  else text += 'El número de asociaciones y su elaboración verbal apunta hacia un estilo más focalizado o selectivo. ';
+  if (dims.control > 60)
+    p.push('La tendencia a estructurar y organizar las percepciones indica necesidad de orden, predictibilidad y control del entorno.');
+  else if (dims.control < 25)
+    p.push('El pensamiento muestra fluidez y flexibilidad, con menor necesidad de estructura formal.');
+  else
+    p.push('Se observa un equilibrio entre flexibilidad y estructura en el modo de procesar la información.');
 
-  // Control
-  if (dims.control > 60) text += 'La tendencia a estructurar y organizar las percepciones indica necesidad de orden, predictibilidad y control del entorno. ';
-  else if (dims.control < 30) text += 'El pensamiento muestra fluidez y flexibilidad, con menor necesidad de estructura formal. ';
+  if (dims.abstraccion > 55)
+    p.push('El recurso frecuente al simbolismo puede reflejar un pensamiento elaborado, filosófico o artístico.');
+  else
+    p.push('La orientación es predominantemente concreta y directa en la interpretación de estímulos ambiguos.');
 
-  // Abstracción
-  if (dims.abstraccion > 55) text += 'El recurso frecuente al simbolismo y la abstracción puede reflejar un pensamiento elaborado, filosófico o artístico. ';
-  else text += 'La orientación es predominantemente concreta y directa en la interpretación de estímulos. ';
+  if (dims.fantasia > 55)
+    p.push('La riqueza imaginativa y la capacidad para construir mundos creativos emergen como rasgo destacado.');
+  else
+    p.push('La orientación realista predomina sobre la fantasía, con un procesamiento anclado en lo observable.');
 
-  // Fantasía
-  if (dims.fantasia > 55) text += 'La riqueza imaginativa y la capacidad para construir mundos creativos emerge como rasgo destacado. ';
-  else text += 'La orientación realista predomina sobre la fantasía, con procesamiento anclado en lo cotidiano. ';
-
-  return text;
+  return p.join(' ');
 }
 
 function mostrarInforme() {
   clearInterval(timerInterval);
-  document.getElementById('screen-test').style.display = 'none';
+  document.getElementById('screen-test').style.display   = 'none';
   document.getElementById('screen-report').style.display = 'block';
+  window.scrollTo(0,0);
 
-  // Fecha
   const now = new Date();
   document.getElementById('report-date').textContent =
-    now.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }) +
-    ' — ' + now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    now.toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'}) +
+    ' · ' + now.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
 
-  const dims = calcularDimensiones();
+  const dims = calcularDims();
 
-  // Barras de dimensiones
+  // Barras
   const dimBars = document.getElementById('dim-bars');
   dimBars.innerHTML = '';
   DIMS.forEach(d => {
     const val = dims[d.key];
-    const row = document.createElement('div');
-    row.className = 'dim-row';
-    row.innerHTML = `
-      <div class="dim-name">${d.label}</div>
-      <div class="dim-bar-bg">
-        <div class="dim-bar-fill" style="width:0%" data-target="${val}%"></div>
+    const block = document.createElement('div');
+    block.className = 'dim-block';
+    block.innerHTML = `
+      <div class="dim-row">
+        <div class="dim-name">${d.label}</div>
+        <div class="dim-bar-bg">
+          <div class="dim-bar-fill" style="width:0%" data-target="${val}%"></div>
+        </div>
+        <div class="dim-val">${val}%</div>
       </div>
-      <div class="dim-val">${val}%</div>
-    `;
-    dimBars.appendChild(row);
+      <div class="dim-labels"><span>${d.low}</span><span>${d.high}</span></div>`;
+    dimBars.appendChild(block);
   });
-
-  // Animación barras
   setTimeout(() => {
-    document.querySelectorAll('.dim-bar-fill').forEach(bar => {
-      bar.style.width = bar.dataset.target;
-    });
-  }, 200);
+    document.querySelectorAll('.dim-bar-fill').forEach(b => { b.style.width = b.dataset.target; });
+  }, 150);
 
   // Narrativa
   document.getElementById('narrative-text').textContent = generarNarrativa(dims);
 
-  // Registro por lámina
+  // Registro
   const grid = document.getElementById('respuestas-grid');
   grid.innerHTML = '';
   LAMINAS.forEach((lam, i) => {
-    const r = respuestas[i];
-    const cats = r.categorias.map(id => CATEGORIAS.find(c => c.id === id)?.label || id).join(', ');
-    const card = document.createElement('div');
-    card.className = 'resp-card';
+    const r    = respuestas[i];
+    const cats = r.categorias
+      .map(id => CATEGORIAS.find(c => c.id === id)?.label || id).join(', ');
     const min = String(Math.floor(r.tiempo / 60)).padStart(2,'0');
     const sec = String(r.tiempo % 60).padStart(2,'0');
+    const card = document.createElement('div');
+    card.className = 'resp-card';
     card.innerHTML = `
-      <div class="resp-card-num">LÁMINA ${lam.num} · ${min}:${sec}</div>
-      <div>${r.texto || '<em style="color:#3a3530">Sin descripción libre</em>'}</div>
-      <div class="resp-card-cats">${r.localizacion ? `Loc: ${r.localizacion} · ` : ''}${cats || 'Sin categorías'}</div>
-    `;
+      <div class="resp-card-num">LÁMINA ${lam.num} &nbsp;·&nbsp; ⏱ ${min}:${sec}</div>
+      <div>${r.texto || '<em style="opacity:.5">Sin descripción libre</em>'}</div>
+      <div class="resp-card-cats">
+        ${r.localizacion ? `Loc: <strong>${r.localizacion}</strong>  ` : ''}
+        ${cats || '<em>Sin categorías</em>'}
+      </div>`;
     grid.appendChild(card);
   });
-
-  window.scrollTo(0, 0);
 }
 
 function reiniciar() {
+  clearInterval(timerInterval);
   document.getElementById('screen-report').style.display = 'none';
-  document.getElementById('screen-intro').style.display = 'flex';
+  document.getElementById('screen-intro').style.display  = 'flex';
+  window.scrollTo(0,0);
 }
 </script>
 </body>
