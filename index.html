@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test de Rorschach — Evaluación Psicológica</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Courier+Prime:wght@400;700&family=IM+Fell+English:ital@0;1&display=swap');
+
+  :root {
+    --bg: #0d0c0b;
+    --paper: #f2ede6;
+    --ink: #1a1714;
+    --red: #8b1a1a;
+    --gold: #c9a84c;
+    --gray: #6b6560;
+    --light-gray: #d4cfc8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--paper);
+    font-family: 'Courier Prime', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* PANTALLA DE INICIO */
+  #screen-intro {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 100vh;
+    background: radial-gradient(ellipse at center, #1a1612 0%, #0d0c0b 70%);
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  .logo-header {
+    border: 1px solid var(--gold);
+    padding: 40px 60px;
+    max-width: 560px;
+    width: 100%;
+    position: relative;
+  }
+  .logo-header::before, .logo-header::after {
+    content: '✦';
+    color: var(--gold);
+    position: absolute;
+    font-size: 10px;
+  }
+  .logo-header::before { top: 8px; left: 8px; }
+  .logo-header::after { bottom: 8px; right: 8px; }
+
+  .subtitle-en {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 6vw, 56px);
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .inkblot-deco {
+    width: 80px; height: 40px;
+    margin: 20px auto;
+    opacity: 0.6;
+  }
+
+  .intro-text {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--light-gray);
+    line-height: 1.7;
+    max-width: 420px;
+    margin: 20px auto 30px;
+  }
+
+  .disclaimer {
+    background: rgba(139,26,26,0.15);
+    border: 1px solid rgba(139,26,26,0.4);
+    border-radius: 2px;
+    padding: 14px 18px;
+    font-size: 11px;
+    color: #c47070;
+    line-height: 1.6;
+    max-width: 420px;
+    margin: 0 auto 30px;
+    text-align: left;
+  }
+
+  .btn-primary {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 14px 40px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+    z-index: -1;
+  }
+  .btn-primary:hover { color: var(--ink); }
+  .btn-primary:hover::before { transform: scaleX(1); }
+
+  /* PANTALLA DEL TEST */
+  #screen-test { display: none; padding: 20px; max-width: 900px; margin: 0 auto; }
+
+  .progress-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 0; border-bottom: 1px solid #2a2520; margin-bottom: 30px;
+  }
+
+  .lamina-label {
+    font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--gold);
+  }
+
+  .progress-bar-wrap {
+    flex: 1; height: 2px;
+    background: #2a2520; margin: 0 20px;
+  }
+  .progress-bar-fill {
+    height: 100%; background: var(--gold);
+    transition: width 0.5s ease;
+  }
+
+  .card {
+    background: #13120f;
+    border: 1px solid #2a2520;
+    padding: 30px;
+    margin-bottom: 20px;
+  }
+
+  /* SVG MANCHA */
+  .inkblot-container {
+    display: flex; justify-content: center; align-items: center;
+    background: var(--paper);
+    padding: 30px;
+    margin-bottom: 24px;
+    min-height: 280px;
+    position: relative;
+  }
+  .inkblot-container svg {
+    max-width: 340px; max-height: 240px;
+    filter: drop-shadow(0 4px 20px rgba(0,0,0,0.4));
+  }
+
+  .lamina-num {
+    position: absolute; top: 10px; left: 14px;
+    font-size: 10px; color: var(--gray);
+    letter-spacing: 2px;
+  }
+
+  /* INSTRUCCIONES */
+  .instruccion {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--light-gray);
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #2a2520;
+  }
+
+  /* CATEGORIAS */
+  .section-label {
+    font-size: 10px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--gray);
+    margin-bottom: 12px;
+  }
+
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .cat-btn {
+    background: #1a1714;
+    border: 1px solid #2a2520;
+    color: var(--light-gray);
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    padding: 8px 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .cat-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .cat-btn.selected {
+    background: rgba(201,168,76,0.12);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* TEXTO LIBRE */
+  .respuesta-textarea {
+    width: 100%;
+    background: #0d0c0b;
+    border: 1px solid #2a2520;
+    border-radius: 0;
+    color: var(--paper);
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    padding: 14px;
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.6;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .respuesta-textarea:focus { border-color: var(--gold); }
+  .respuesta-textarea::placeholder { color: #3a3530; }
+
+  /* LOCALIZACION */
+  .loc-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .loc-btn {
+    background: #1a1714;
+    border: 1px solid #2a2520;
+    color: var(--light-gray);
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .loc-btn:hover { border-color: #8b6ea0; color: #c9a8e0; }
+  .loc-btn.selected { background: rgba(139,110,160,0.12); border-color: #8b6ea0; color: #c9a8e0; }
+
+  .nav-btns {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 24px;
+  }
+
+  .btn-sec {
+    background: transparent;
+    border: 1px solid #2a2520;
+    color: var(--gray);
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 10px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-sec:hover { border-color: var(--gray); color: var(--paper); }
+
+  .timer-display {
+    font-size: 11px; color: var(--gray); letter-spacing: 2px;
+  }
+
+  /* PANTALLA INFORME */
+  #screen-report { display: none; padding: 20px; max-width: 860px; margin: 0 auto; }
+
+  .report-header {
+    border: 1px solid var(--gold);
+    padding: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+    position: relative;
+  }
+  .report-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 700; margin-bottom: 6px;
+  }
+  .report-subtitle {
+    font-size: 10px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--gold);
+  }
+  .report-date {
+    font-size: 11px; color: var(--gray); margin-top: 8px;
+  }
+
+  .report-section {
+    background: #13120f;
+    border: 1px solid #2a2520;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .report-section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    margin-bottom: 16px;
+    color: var(--gold);
+    border-bottom: 1px solid #2a2520;
+    padding-bottom: 10px;
+  }
+
+  .dim-bars { display: flex; flex-direction: column; gap: 12px; }
+
+  .dim-row { display: flex; align-items: center; gap: 12px; }
+  .dim-name {
+    font-size: 11px; letter-spacing: 1px;
+    color: var(--light-gray); width: 160px; flex-shrink: 0;
+  }
+  .dim-bar-bg {
+    flex: 1; height: 6px; background: #2a2520; position: relative;
+  }
+  .dim-bar-fill {
+    height: 100%; background: var(--gold);
+    transition: width 1s ease;
+  }
+  .dim-val {
+    font-size: 11px; color: var(--gray);
+    width: 36px; text-align: right;
+  }
+
+  .narrative-text {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--light-gray);
+  }
+
+  .respuestas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .resp-card {
+    background: #0d0c0b;
+    border: 1px solid #2a2520;
+    padding: 12px;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .resp-card-num {
+    font-size: 9px; letter-spacing: 2px;
+    color: var(--gold); margin-bottom: 5px;
+  }
+  .resp-card-cats {
+    color: var(--gray); font-size: 10px; margin-top: 4px;
+  }
+
+  .disclaimer-report {
+    border: 1px solid #2a2520;
+    padding: 14px;
+    font-size: 11px;
+    color: var(--gray);
+    line-height: 1.6;
+    margin-top: 20px;
+  }
+
+  .btn-reiniciar {
+    display: block; margin: 30px auto 0;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 14px 40px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-reiniciar:hover { background: var(--gold); color: var(--ink); }
+
+  /* Animaciones */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeIn 0.5s ease forwards; }
+
+  @keyframes inkDrop {
+    0% { opacity: 0; transform: scale(0.8); }
+    60% { opacity: 1; transform: scale(1.03); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  .ink-anim { animation: inkDrop 0.7s ease forwards; }
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="screen-intro">
+  <div class="logo-header">
+    <div class="subtitle-en">Psychodiagnostic Inkblot Test</div>
+    <h1>Test de<br>Rorschach</h1>
+    <svg class="inkblot-deco" viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="40" cy="20" rx="18" ry="14" fill="#c9a84c" opacity="0.5"/>
+      <ellipse cx="28" cy="14" rx="9" ry="6" fill="#c9a84c" opacity="0.4"/>
+      <ellipse cx="52" cy="14" rx="9" ry="6" fill="#c9a84c" opacity="0.4"/>
+    </svg>
+    <p class="intro-text">
+      Desarrollado por Hermann Rorschach en 1921, este test proyectivo explora los procesos perceptivos y asociativos a través de manchas de tinta ambiguas.
+    </p>
+    <div class="disclaimer">
+      ⚠ Este test es únicamente educativo y exploratorio. No constituye diagnóstico clínico. Para evaluación psicológica real, consulte a un profesional cualificado.
+    </div>
+    <button class="btn-primary" onclick="iniciarTest()">Comenzar Evaluación</button>
+  </div>
+</div>
+
+<!-- TEST -->
+<div id="screen-test">
+  <div class="progress-header">
+    <span class="lamina-label" id="lamina-label">Lámina I</span>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+    </div>
+    <span class="lamina-label" id="lamina-counter">1 / 10</span>
+  </div>
+
+  <div class="card fade-in" id="main-card">
+    <div class="inkblot-container">
+      <span class="lamina-num" id="lamina-num-label">I</span>
+      <svg id="inkblot-svg" viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <p class="instruccion">"Dígame qué podría ser esto. No hay respuestas correctas o incorrectas."</p>
+
+    <div class="section-label">Localización — ¿Qué parte de la mancha observa?</div>
+    <div class="loc-grid" id="loc-grid">
+      <button class="loc-btn" onclick="toggleLoc(this,'W')">W — Global</button>
+      <button class="loc-btn" onclick="toggleLoc(this,'D')">D — Detalle mayor</button>
+      <button class="loc-btn" onclick="toggleLoc(this,'Dd')">Dd — Detalle menor</button>
+      <button class="loc-btn" onclick="toggleLoc(this,'S')">S — Espacio blanco</button>
+    </div>
+
+    <div class="section-label">Contenido — ¿Qué ve?</div>
+    <div class="cat-grid" id="cat-grid"></div>
+
+    <div class="section-label">Descripción libre</div>
+    <textarea class="respuesta-textarea" id="respuesta-text"
+      placeholder="Describa con sus propias palabras lo que percibe en esta imagen..."></textarea>
+
+    <div class="nav-btns">
+      <button class="btn-sec" id="btn-anterior" onclick="irAnterior()">← Anterior</button>
+      <span class="timer-display" id="timer-display">00:00</span>
+      <button class="btn-primary" id="btn-siguiente" onclick="irSiguiente()">Siguiente →</button>
+    </div>
+  </div>
+</div>
+
+<!-- INFORME -->
+<div id="screen-report">
+  <div class="report-header fade-in">
+    <div class="report-subtitle">Informe Psicológico Proyectivo</div>
+    <div class="report-title">Test de Rorschach</div>
+    <div class="report-date" id="report-date"></div>
+  </div>
+
+  <div class="report-section fade-in">
+    <div class="report-section-title">Perfil por Dimensiones</div>
+    <div class="dim-bars" id="dim-bars"></div>
+  </div>
+
+  <div class="report-section fade-in">
+    <div class="report-section-title">Perfil Narrativo de Personalidad</div>
+    <div class="narrative-text" id="narrative-text"></div>
+  </div>
+
+  <div class="report-section fade-in">
+    <div class="report-section-title">Registro por Lámina</div>
+    <div class="respuestas-grid" id="respuestas-grid"></div>
+  </div>
+
+  <div class="disclaimer-report">
+    <strong>Aviso importante:</strong> Este informe es de carácter educativo y exploratorio. Las interpretaciones presentadas están basadas en asociaciones clásicas de la psicología proyectiva y NO constituyen un diagnóstico clínico. Los sistemas de puntuación validados (Exner, R-PAS) requieren administración e interpretación por psicólogos especializados. No tome decisiones basadas en este resultado.
+  </div>
+
+  <button class="btn-reiniciar" onclick="reiniciar()">↺ Reiniciar Evaluación</button>
+</div>
+
+<script>
+// ============================================================
+// DATOS DE LAS LÁMINAS
+// ============================================================
+const LAMINAS = [
+  {
+    num: 'I', nombre: 'Lámina I',
+    colores: ['#1a1714'],
+    tipo: 'bilateral', seed: 101,
+    popularRes: 'Murciélago, mariposa, máscara'
+  },
+  {
+    num: 'II', nombre: 'Lámina II',
+    colores: ['#1a1714', '#7a1a1a'],
+    tipo: 'bilateral_rojo', seed: 202,
+    popularRes: 'Dos personas, mariposa, perro'
+  },
+  {
+    num: 'III', nombre: 'Lámina III',
+    colores: ['#1a1714', '#8b1a1a'],
+    tipo: 'bilateral_rojo2', seed: 303,
+    popularRes: 'Dos figuras humanas, lazo, mariposa'
+  },
+  {
+    num: 'IV', nombre: 'Lámina IV',
+    colores: ['#111010'],
+    tipo: 'grande_oscuro', seed: 404,
+    popularRes: 'Figura imponente, gigante, animal grande'
+  },
+  {
+    num: 'V', nombre: 'Lámina V',
+    colores: ['#1a1714'],
+    tipo: 'mariposa', seed: 505,
+    popularRes: 'Murciélago, mariposa, ave'
+  },
+  {
+    num: 'VI', nombre: 'Lámina VI',
+    colores: ['#1a1714'],
+    tipo: 'vertical', seed: 606,
+    popularRes: 'Piel de animal, totem, insecto'
+  },
+  {
+    num: 'VII', nombre: 'Lámina VII',
+    colores: ['#2a2520'],
+    tipo: 'nubes', seed: 707,
+    popularRes: 'Cabezas humanas, mujeres, conejo'
+  },
+  {
+    num: 'VIII', nombre: 'Lámina VIII',
+    colores: ['#4a6741', '#c48040', '#6b5080'],
+    tipo: 'color_lateral', seed: 808,
+    popularRes: 'Animal trepando, oso, camaleón'
+  },
+  {
+    num: 'IX', nombre: 'Lámina IX',
+    colores: ['#7a4a20', '#4a6040', '#b07030'],
+    tipo: 'color_central', seed: 909,
+    popularRes: 'Bruja, ogro, explosión'
+  },
+  {
+    num: 'X', nombre: 'Lámina X',
+    colores: ['#3a5a8a', '#4a8a4a', '#8a7a20', '#8a3a6a'],
+    tipo: 'color_multiple', seed: 1010,
+    popularRes: 'Arañas, cangrejos, insectos, flores'
+  }
+];
+
+const CATEGORIAS = [
+  { id: 'H', label: '👤 Figura humana', dim: 'social' },
+  { id: 'Hd', label: '🫂 Parte humana', dim: 'social' },
+  { id: 'A', label: '🐾 Animal completo', dim: 'convencional' },
+  { id: 'Ad', label: '🦷 Parte animal', dim: 'convencional' },
+  { id: 'An', label: '🫀 Anatomía', dim: 'ansiedad' },
+  { id: 'Sx', label: '⚡ Sexual', dim: 'impulso' },
+  { id: 'Bl', label: '🩸 Sangre', dim: 'ansiedad' },
+  { id: 'Fire', label: '🔥 Fuego/Explosión', dim: 'impulso' },
+  { id: 'Nat', label: '🌿 Naturaleza', dim: 'recursos' },
+  { id: 'Geo', label: '🗺 Geografía/Mapa', dim: 'recursos' },
+  { id: 'Obj', label: '🔧 Objeto/Herramienta', dim: 'control' },
+  { id: 'Arq', label: '🏛 Arquitectura', dim: 'control' },
+  { id: 'Simbolo', label: '✨ Símbolo/Emblema', dim: 'abstraccion' },
+  { id: 'Abs', label: '🌀 Abstracto', dim: 'abstraccion' },
+  { id: 'Mito', label: '🐉 Monstruo/Mitología', dim: 'fantasia' },
+  { id: 'Sci', label: '🔭 Ciencia/Espacio', dim: 'fantasia' },
+];
+
+const DIMS = [
+  { key: 'social', label: 'Orientación Social', low: 'Tendencia al aislamiento', high: 'Alta empatía y sociabilidad' },
+  { key: 'convencional', label: 'Pensamiento Convencional', low: 'Originalidad / pensamiento divergente', high: 'Respuestas populares, adaptación social' },
+  { key: 'ansiedad', label: 'Tensión Interna', low: 'Calma emocional', high: 'Sensibilidad emocional elevada' },
+  { key: 'impulso', label: 'Vitalidad / Impulso', low: 'Contención afectiva', high: 'Expresividad y vitalidad' },
+  { key: 'recursos', label: 'Recursos Adaptativos', low: 'Recursos limitados / introspección', high: 'Amplitud de intereses' },
+  { key: 'control', label: 'Control y Estructura', low: 'Pensamiento fluido / flexible', high: 'Necesidad de orden y estructura' },
+  { key: 'abstraccion', label: 'Abstracción / Simbolismo', low: 'Orientación concreta', high: 'Alto nivel de simbolización' },
+  { key: 'fantasia', label: 'Creatividad / Fantasía', low: 'Orientación realista', high: 'Riqueza imaginativa' },
+];
+
+// ============================================================
+// GENERADOR SVG DE MANCHAS
+// ============================================================
+function seededRandom(seed) {
+  let s = seed;
+  return function() {
+    s = (s * 9301 + 49297) % 233280;
+    return s / 233280;
+  };
+}
+
+function generatePath(rng, cx, cy, rx, ry, pts, rough) {
+  const points = [];
+  for (let i = 0; i < pts; i++) {
+    const angle = (i / pts) * Math.PI * 2;
+    const r = (0.5 + rng() * 0.5);
+    const px = cx + Math.cos(angle) * rx * r + (rng() - 0.5) * rough;
+    const py = cy + Math.sin(angle) * ry * r + (rng() - 0.5) * rough;
+    points.push([px, py]);
+  }
+  // Curvas suaves
+  let d = `M ${points[0][0]} ${points[0][1]}`;
+  for (let i = 0; i < points.length; i++) {
+    const p1 = points[i];
+    const p2 = points[(i + 1) % points.length];
+    const mx = (p1[0] + p2[0]) / 2;
+    const my = (p1[1] + p2[1]) / 2;
+    d += ` Q ${p1[0]} ${p1[1]} ${mx} ${my}`;
+  }
+  d += ' Z';
+  return d;
+}
+
+function generateBlob(rng, cx, cy, rx, ry, count) {
+  let paths = '';
+  for (let i = 0; i < count; i++) {
+    const ox = (rng() - 0.5) * rx * 0.6;
+    const oy = (rng() - 0.5) * ry * 0.6;
+    const srx = rx * (0.3 + rng() * 0.6);
+    const sry = ry * (0.2 + rng() * 0.5);
+    const pts = 8 + Math.floor(rng() * 6);
+    const rough = 6 + rng() * 14;
+    const opacity = 0.4 + rng() * 0.6;
+    const d = generatePath(rng, cx + ox, cy + oy, srx, sry, pts, rough);
+    paths += `<path d="${d}" opacity="${opacity.toFixed(2)}"/>`;
+  }
+  return paths;
+}
+
+function mirrorPath(pathStr, cx) {
+  // Refleja los paths en x alrededor de cx
+  return pathStr.replace(/-?\d+\.?\d*/g, (match, offset, str) => {
+    // Determinar si es coordenada X (simplificación: alternamos)
+    return match; // devolvemos sin cambio (usamos transform="scale(-1,1)")
+  });
+}
+
+function generateInkblot(lamina) {
+  const rng = seededRandom(lamina.seed);
+  const W = 340, H = 220;
+  const cx = W / 2, cy = H / 2;
+
+  let svg = '';
+  const tipo = lamina.tipo;
+  const color = lamina.colores[0];
+
+  // Fondo papel
+  svg += `<rect width="${W}" height="${H}" fill="#f2ede6"/>`;
+
+  // Grupo principal (mitad derecha, luego se espeja)
+  const blobCount = 5 + Math.floor(rng() * 5);
+
+  if (tipo === 'bilateral' || tipo === 'mariposa') {
+    const rx = 70 + rng() * 30;
+    const ry = 55 + rng() * 25;
+    // mitad derecha
+    svg += `<g fill="${color}">`;
+    svg += generateBlob(rng, cx + 20, cy, rx, ry, blobCount);
+    svg += `</g>`;
+    // espejo mitad izquierda
+    svg += `<g fill="${color}" transform="scale(-1,1) translate(-${W},0)">`;
+    svg += generateBlob(seededRandom(lamina.seed), cx + 20, cy, rx, ry, blobCount);
+    svg += `</g>`;
+    // centro
+    svg += `<g fill="${color}">`;
+    svg += generateBlob(rng, cx, cy, 20, ry * 0.8, 3);
+    svg += `</g>`;
+  }
+  else if (tipo === 'bilateral_rojo' || tipo === 'bilateral_rojo2') {
+    const rx = 60 + rng() * 25;
+    const ry = 50 + rng() * 20;
+    // negro
+    svg += `<g fill="${color}">`;
+    svg += generateBlob(rng, cx + 30, cy + 10, rx, ry, 4);
+    svg += `</g>`;
+    svg += `<g fill="${color}" transform="scale(-1,1) translate(-${W},0)">`;
+    svg += generateBlob(seededRandom(lamina.seed), cx + 30, cy + 10, rx, ry, 4);
+    svg += `</g>`;
+    // rojo
+    const rojo = lamina.colores[1];
+    svg += `<g fill="${rojo}">`;
+    const rngR = seededRandom(lamina.seed + 50);
+    svg += generateBlob(rngR, cx, cy - 40, 28, 22, 2);
+    svg += generateBlob(rngR, cx + 55, cy + 55, 22, 18, 2);
+    svg += `</g>`;
+    svg += `<g fill="${rojo}" transform="scale(-1,1) translate(-${W},0)">`;
+    const rngR2 = seededRandom(lamina.seed + 50);
+    svg += generateBlob(rngR2, cx, cy - 40, 28, 22, 2);
+    svg += generateBlob(rngR2, cx + 55, cy + 55, 22, 18, 2);
+    svg += `</g>`;
+  }
+  else if (tipo === 'grande_oscuro') {
+    const rx = 90; const ry = 70;
+    svg += `<g fill="${color}">`;
+    svg += generateBlob(rng, cx + 20, cy + 10, rx, ry, 7);
+    svg += `</g>`;
+    svg += `<g fill="${color}" transform="scale(-1,1) translate(-${W},0)">`;
+    svg += generateBlob(seededRandom(lamina.seed), cx + 20, cy + 10, rx, ry, 7);
+    svg += `</g>`;
+    svg += `<g fill="${color}">`;
+    svg += generateBlob(seededRandom(lamina.seed+1), cx, cy, 16, ry * 0.9, 3);
+    svg += `</g>`;
+  }
+  else if (tipo === 'vertical') {
+    svg += `<g fill="${color}">`;
+    svg += generateBlob(rng, cx + 22, cy, 55, 80, 6);
+    svg += `</g>`;
+    svg += `<g fill="${color}" transform="scale(-1,1) translate(-${W},0)">`;
+    svg += generateBlob(seededRandom(lamina.seed), cx + 22, cy, 55, 80, 6);
+    svg += `</g>`;
+    // parte superior vertical
+    svg += `<g fill="${color}">`;
+    svg += generateBlob(seededRandom(lamina.seed+2), cx, cy - 50, 12, 40, 3);
+    svg += `</g>`;
+  }
+  else if (tipo === 'nubes') {
+    svg += `<g fill="${color}">`;
+    svg += generateBlob(rng, cx + 30, cy - 20, 50, 55, 5);
+    svg += generateBlob(rng, cx + 20, cy + 40, 40, 30, 3);
+    svg += `</g>`;
+    svg += `<g fill="${color}" transform="scale(-1,1) translate(-${W},0)">`;
+    const rng2 = seededRandom(lamina.seed);
+    svg += generateBlob(rng2, cx + 30, cy - 20, 50, 55, 5);
+    svg += generateBlob(rng2, cx + 20, cy + 40, 40, 30, 3);
+    svg += `</g>`;
+  }
+  else if (tipo === 'color_lateral') {
+    const colores = lamina.colores;
+    for (let ci = 0; ci < colores.length; ci++) {
+      const rngC = seededRandom(lamina.seed + ci * 37);
+      const offY = (ci - 1) * 50;
+      svg += `<g fill="${colores[ci]}">`;
+      svg += generateBlob(rngC, cx + 50, cy + offY, 40, 30, 3);
+      svg += `</g>`;
+      svg += `<g fill="${colores[ci]}" transform="scale(-1,1) translate(-${W},0)">`;
+      svg += generateBlob(seededRandom(lamina.seed + ci * 37), cx + 50, cy + offY, 40, 30, 3);
+      svg += `</g>`;
+    }
+    // gris centro
+    svg += `<g fill="${color}">`;
+    svg += generateBlob(seededRandom(lamina.seed + 99), cx, cy, 30, 60, 4);
+    svg += `</g>`;
+  }
+  else if (tipo === 'color_central') {
+    const colores = lamina.colores;
+    for (let ci = 0; ci < colores.length; ci++) {
+      const rngC = seededRandom(lamina.seed + ci * 53);
+      const offX = (ci - 1) * 45;
+      svg += `<g fill="${colores[ci]}">`;
+      svg += generateBlob(rngC, cx + offX + 15, cy, 45, 40, 4);
+      svg += `</g>`;
+      svg += `<g fill="${colores[ci]}" transform="scale(-1,1) translate(-${W},0)">`;
+      svg += generateBlob(seededRandom(lamina.seed + ci * 53), cx + offX + 15, cy, 45, 40, 4);
+      svg += `</g>`;
+    }
+  }
+  else if (tipo === 'color_multiple') {
+    const colores = lamina.colores;
+    const positions = [
+      [cx + 40, cy - 60], [cx + 80, cy + 10], [cx + 40, cy + 60],
+      [cx + 10, cy - 20], [cx + 60, cy - 30]
+    ];
+    for (let pi = 0; pi < positions.length; pi++) {
+      const col = colores[pi % colores.length];
+      const rngC = seededRandom(lamina.seed + pi * 17);
+      svg += `<g fill="${col}">`;
+      svg += generateBlob(rngC, positions[pi][0], positions[pi][1], 30, 24, 3);
+      svg += `</g>`;
+      svg += `<g fill="${col}" transform="scale(-1,1) translate(-${W},0)">`;
+      svg += generateBlob(seededRandom(lamina.seed + pi * 17), positions[pi][0], positions[pi][1], 30, 24, 3);
+      svg += `</g>`;
+    }
+  }
+
+  // Textura de grano sutil
+  svg += `<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feBlend in="SourceGraphic" mode="multiply"/></filter>`;
+
+  return svg;
+}
+
+// ============================================================
+// ESTADO DE LA APP
+// ============================================================
+let laminaActual = 0;
+let respuestas = [];
+let timerInterval = null;
+let tiempoInicio = null;
+
+// ============================================================
+// INICIALIZACIÓN
+// ============================================================
+function iniciarTest() {
+  respuestas = LAMINAS.map(() => ({ categorias: [], localizacion: null, texto: '', tiempo: 0 }));
+  document.getElementById('screen-intro').style.display = 'none';
+  document.getElementById('screen-test').style.display = 'block';
+  laminaActual = 0;
+  renderLamina(0);
+}
+
+function renderLamina(idx) {
+  const lamina = LAMINAS[idx];
+  document.getElementById('lamina-label').textContent = lamina.nombre;
+  document.getElementById('lamina-counter').textContent = `${idx + 1} / 10`;
+  document.getElementById('lamina-num-label').textContent = lamina.num;
+  document.getElementById('progress-bar').style.width = `${(idx / 10) * 100}%`;
+  document.getElementById('btn-anterior').style.visibility = idx === 0 ? 'hidden' : 'visible';
+  document.getElementById('btn-siguiente').textContent = idx === 9 ? 'Ver Informe →' : 'Siguiente →';
+
+  // Generar SVG
+  const svg = document.getElementById('inkblot-svg');
+  svg.innerHTML = generateInkblot(lamina);
+  svg.classList.remove('ink-anim');
+  void svg.offsetWidth; // reflow
+  svg.classList.add('ink-anim');
+
+  // Categorías
+  const catGrid = document.getElementById('cat-grid');
+  catGrid.innerHTML = '';
+  CATEGORIAS.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn';
+    btn.textContent = cat.label;
+    btn.dataset.id = cat.id;
+    if (respuestas[idx].categorias.includes(cat.id)) btn.classList.add('selected');
+    btn.onclick = () => toggleCat(btn, cat.id, idx);
+    catGrid.appendChild(btn);
+  });
+
+  // Localización
+  document.querySelectorAll('.loc-btn').forEach(btn => {
+    btn.classList.toggle('selected', btn.textContent.startsWith(respuestas[idx].localizacion));
+  });
+
+  // Texto
+  document.getElementById('respuesta-text').value = respuestas[idx].texto;
+
+  // Timer
+  clearInterval(timerInterval);
+  tiempoInicio = Date.now() - respuestas[idx].tiempo * 1000;
+  timerInterval = setInterval(updateTimer, 1000);
+  updateTimer();
+}
+
+function updateTimer() {
+  const elapsed = Math.floor((Date.now() - tiempoInicio) / 1000);
+  respuestas[laminaActual].tiempo = elapsed;
+  const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
+  const s = String(elapsed % 60).padStart(2, '0');
+  document.getElementById('timer-display').textContent = `${m}:${s}`;
+}
+
+function toggleCat(btn, id, idx) {
+  const r = respuestas[idx];
+  if (r.categorias.includes(id)) {
+    r.categorias = r.categorias.filter(c => c !== id);
+    btn.classList.remove('selected');
+  } else {
+    r.categorias.push(id);
+    btn.classList.add('selected');
+  }
+}
+
+function toggleLoc(btn, loc) {
+  const current = respuestas[laminaActual].localizacion;
+  if (current === loc) {
+    respuestas[laminaActual].localizacion = null;
+    btn.classList.remove('selected');
+  } else {
+    respuestas[laminaActual].localizacion = loc;
+    document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+}
+
+function guardarRespuestaActual() {
+  respuestas[laminaActual].texto = document.getElementById('respuesta-text').value;
+}
+
+function irSiguiente() {
+  guardarRespuestaActual();
+  if (laminaActual < 9) {
+    laminaActual++;
+    renderLamina(laminaActual);
+  } else {
+    mostrarInforme();
+  }
+}
+
+function irAnterior() {
+  guardarRespuestaActual();
+  if (laminaActual > 0) {
+    laminaActual--;
+    renderLamina(laminaActual);
+  }
+}
+
+// ============================================================
+// INFORME
+// ============================================================
+function calcularDimensiones() {
+  const scores = {};
+  DIMS.forEach(d => scores[d.key] = 0);
+  const counts = {};
+  DIMS.forEach(d => counts[d.key] = 0);
+
+  respuestas.forEach(r => {
+    r.categorias.forEach(catId => {
+      const cat = CATEGORIAS.find(c => c.id === catId);
+      if (cat) {
+        scores[cat.dim] = (scores[cat.dim] || 0) + 1;
+      }
+    });
+  });
+
+  // Localización aporta a control y convencional
+  respuestas.forEach(r => {
+    if (r.localizacion === 'W') scores.convencional += 0.5;
+    if (r.localizacion === 'D') scores.control += 0.3;
+    if (r.localizacion === 'Dd') scores.abstraccion += 0.4;
+    if (r.localizacion === 'S') scores.fantasia += 0.3;
+  });
+
+  // Texto libre: longitud aporta a recursos y elaboración
+  respuestas.forEach(r => {
+    const words = r.texto.trim().split(/\s+/).filter(Boolean).length;
+    scores.recursos += Math.min(words * 0.1, 1.5);
+    scores.social += Math.min(words * 0.05, 0.8);
+  });
+
+  // Normalizar a 0-100
+  const normalized = {};
+  const maxPosible = 8;
+  DIMS.forEach(d => {
+    normalized[d.key] = Math.min(Math.round((scores[d.key] / maxPosible) * 100), 100);
+  });
+  return normalized;
+}
+
+function generarNarrativa(dims) {
+  let text = '';
+
+  // Social
+  if (dims.social > 60) text += 'La persona muestra una marcada orientación hacia las relaciones humanas, con probable facilidad para la empatía y el contacto social. ';
+  else if (dims.social < 30) text += 'Se observa una tendencia hacia la autonomía y el procesamiento interno, con posible preferencia por espacios de soledad o introspección. ';
+  else text += 'El balance entre orientación social e introversión sugiere una adaptación flexible al entorno interpersonal. ';
+
+  // Convencional
+  if (dims.convencional > 60) text += 'Predominan respuestas de alta popularidad, indicando buena adaptación a las normas sociales y pensamiento práctico. ';
+  else if (dims.convencional < 30) text += 'La originalidad de las asociaciones puede señalar creatividad, pensamiento divergente o una perspectiva singular del mundo. ';
+  else text += 'Se combinan respuestas convencionales con asociaciones más personales, señalando equilibrio entre norma y originalidad. ';
+
+  // Ansiedad
+  if (dims.ansiedad > 50) text += 'Emergen indicadores de tensión interna o sensibilidad emocional elevada, posiblemente relacionados con preocupaciones somáticas o afectivas. ';
+  else text += 'El nivel de tensión interna parece contenido, con procesamiento emocional relativamente estable. ';
+
+  // Impulso
+  if (dims.impulso > 50) text += 'Se percibe vitalidad expresiva y dinamismo afectivo, con probable riqueza en la vida emocional. ';
+  else text += 'La contención afectiva observada puede reflejar control emocional o preferencia por la moderación. ';
+
+  // Recursos
+  if (dims.recursos > 55) text += 'La amplitud de asociaciones sugiere buena disponibilidad de recursos psicológicos y apertura a experiencias diversas. ';
+  else text += 'El número de asociaciones y su elaboración verbal apunta hacia un estilo más focalizado o selectivo. ';
+
+  // Control
+  if (dims.control > 60) text += 'La tendencia a estructurar y organizar las percepciones indica necesidad de orden, predictibilidad y control del entorno. ';
+  else if (dims.control < 30) text += 'El pensamiento muestra fluidez y flexibilidad, con menor necesidad de estructura formal. ';
+
+  // Abstracción
+  if (dims.abstraccion > 55) text += 'El recurso frecuente al simbolismo y la abstracción puede reflejar un pensamiento elaborado, filosófico o artístico. ';
+  else text += 'La orientación es predominantemente concreta y directa en la interpretación de estímulos. ';
+
+  // Fantasía
+  if (dims.fantasia > 55) text += 'La riqueza imaginativa y la capacidad para construir mundos creativos emerge como rasgo destacado. ';
+  else text += 'La orientación realista predomina sobre la fantasía, con procesamiento anclado en lo cotidiano. ';
+
+  return text;
+}
+
+function mostrarInforme() {
+  clearInterval(timerInterval);
+  document.getElementById('screen-test').style.display = 'none';
+  document.getElementById('screen-report').style.display = 'block';
+
+  // Fecha
+  const now = new Date();
+  document.getElementById('report-date').textContent =
+    now.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }) +
+    ' — ' + now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+  const dims = calcularDimensiones();
+
+  // Barras de dimensiones
+  const dimBars = document.getElementById('dim-bars');
+  dimBars.innerHTML = '';
+  DIMS.forEach(d => {
+    const val = dims[d.key];
+    const row = document.createElement('div');
+    row.className = 'dim-row';
+    row.innerHTML = `
+      <div class="dim-name">${d.label}</div>
+      <div class="dim-bar-bg">
+        <div class="dim-bar-fill" style="width:0%" data-target="${val}%"></div>
+      </div>
+      <div class="dim-val">${val}%</div>
+    `;
+    dimBars.appendChild(row);
+  });
+
+  // Animación barras
+  setTimeout(() => {
+    document.querySelectorAll('.dim-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.target;
+    });
+  }, 200);
+
+  // Narrativa
+  document.getElementById('narrative-text').textContent = generarNarrativa(dims);
+
+  // Registro por lámina
+  const grid = document.getElementById('respuestas-grid');
+  grid.innerHTML = '';
+  LAMINAS.forEach((lam, i) => {
+    const r = respuestas[i];
+    const cats = r.categorias.map(id => CATEGORIAS.find(c => c.id === id)?.label || id).join(', ');
+    const card = document.createElement('div');
+    card.className = 'resp-card';
+    const min = String(Math.floor(r.tiempo / 60)).padStart(2,'0');
+    const sec = String(r.tiempo % 60).padStart(2,'0');
+    card.innerHTML = `
+      <div class="resp-card-num">LÁMINA ${lam.num} · ${min}:${sec}</div>
+      <div>${r.texto || '<em style="color:#3a3530">Sin descripción libre</em>'}</div>
+      <div class="resp-card-cats">${r.localizacion ? `Loc: ${r.localizacion} · ` : ''}${cats || 'Sin categorías'}</div>
+    `;
+    grid.appendChild(card);
+  });
+
+  window.scrollTo(0, 0);
+}
+
+function reiniciar() {
+  document.getElementById('screen-report').style.display = 'none';
+  document.getElementById('screen-intro').style.display = 'flex';
+}
+</script>
+</body>
+</html>
