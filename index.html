@@ -254,6 +254,109 @@
   }
   .btn-reiniciar:hover { background:#6a5010; }
 
+  /* ── INPUT NOMBRE ── */
+  .nombre-wrap {
+    display:flex; flex-direction:column; gap:6px;
+    max-width:420px; margin:0 auto 22px;
+  }
+  .nombre-label {
+    font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--gold);
+    text-align:left;
+  }
+  .nombre-input {
+    background:#fff; border:1px solid var(--border);
+    color:var(--ink); font-family:'Courier Prime',monospace;
+    font-size:14px; padding:10px 14px; outline:none;
+    transition:border-color .2s; text-align:center; letter-spacing:1px;
+  }
+  .nombre-input:focus { border-color:var(--gold); }
+  .nombre-input::placeholder { color:var(--border); font-style:italic; }
+
+  /* ── CATEGORÍAS — feedback visual reforzado ── */
+  .cat-btn {
+    position:relative;
+  }
+  .cat-btn.selected {
+    background: #f5ead0 !important;
+    border-color: var(--gold) !important;
+    border-width: 2px !important;
+    color: #5a3800 !important;
+    font-weight: 700 !important;
+    box-shadow: inset 0 0 0 1px rgba(138,104,32,.25);
+  }
+  .cat-btn.selected::after {
+    content: ' ✓';
+    font-size: 10px;
+    opacity: .7;
+  }
+
+  /* ── BOTÓN PDF ── */
+  .btn-pdf {
+    background:#1c1814; border:1px solid #1c1814; color:#fff;
+    font-family:'Courier Prime',monospace; font-size:12px;
+    letter-spacing:3px; text-transform:uppercase;
+    padding:13px 28px; cursor:pointer; transition:all .25s;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-pdf:hover { background:#3a2f20; }
+
+  /* ── BARRA BOTONES INFORME ── */
+  .report-btns {
+    display:flex; gap:12px; justify-content:center;
+    margin-top:22px; flex-wrap:wrap;
+  }
+
+  /* ── MODAL ACERCA DE ── */
+  .modal-overlay {
+    display:none; position:fixed; inset:0;
+    background:rgba(20,16,10,.55); backdrop-filter:blur(3px);
+    z-index:1000; align-items:center; justify-content:center; padding:20px;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal-box {
+    background:var(--surface); border:1px solid var(--gold);
+    padding:40px; max-width:520px; width:100%;
+    box-shadow:0 8px 40px rgba(0,0,0,.18); position:relative;
+    animation:fadeIn .3s ease forwards;
+  }
+  .modal-box::before { content:'✦'; color:var(--gold); position:absolute; top:8px; left:10px; font-size:10px; }
+  .modal-box::after  { content:'✦'; color:var(--gold); position:absolute; bottom:8px; right:10px; font-size:10px; }
+  .modal-close {
+    position:absolute; top:14px; right:16px;
+    background:none; border:none; font-size:18px; cursor:pointer;
+    color:var(--ink2); line-height:1; padding:4px;
+  }
+  .modal-close:hover { color:var(--ink); }
+  .modal-title {
+    font-family:'Playfair Display',serif; font-size:22px;
+    font-weight:700; color:var(--ink); margin-bottom:4px;
+  }
+  .modal-version {
+    font-size:10px; letter-spacing:3px; color:var(--gold);
+    text-transform:uppercase; margin-bottom:20px; display:block;
+  }
+  .modal-section {
+    margin-bottom:18px; font-size:12px; line-height:1.7; color:var(--ink2);
+  }
+  .modal-section strong { color:var(--ink); display:block; margin-bottom:4px; font-size:11px; letter-spacing:1px; text-transform:uppercase; }
+  .modal-agradec {
+    background:var(--bg2); border:1px solid var(--border);
+    padding:14px; font-size:12px; line-height:1.8; color:var(--ink2);
+  }
+  .modal-agradec .pers { font-style:italic; }
+  .modal-agradec .role { font-size:10px; color:var(--gold); letter-spacing:1px; }
+
+  /* ── BOTÓN ACERCA DE (flotante esquina) ── */
+  .btn-acerca {
+    position:fixed; bottom:18px; right:18px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--ink2); font-family:'Courier Prime',monospace;
+    font-size:11px; letter-spacing:1px; padding:8px 14px;
+    cursor:pointer; transition:all .2s; z-index:900;
+    box-shadow:0 2px 10px var(--shadow);
+  }
+  .btn-acerca:hover { border-color:var(--gold); color:var(--gold); }
+
   @keyframes fadeIn {
     from { opacity:0; transform:translateY(8px); }
     to   { opacity:1; transform:translateY(0); }
@@ -278,6 +381,11 @@
     </p>
     <div class="disclaimer">
       ⚠ Este test es únicamente educativo y exploratorio. No constituye diagnóstico clínico. Para evaluación psicológica real, consulte a un profesional cualificado.
+    </div>
+    <div class="nombre-wrap">
+      <label class="nombre-label" for="input-nombre">Nombre del evaluado</label>
+      <input class="nombre-input" id="input-nombre" type="text"
+        placeholder="Introduzca nombre y apellidos..." autocomplete="off"/>
     </div>
     <button class="btn-primary" onclick="iniciarTest()">Comenzar Evaluación</button>
   </div>
@@ -339,6 +447,7 @@
   <div class="report-header fade-in">
     <div class="report-subtitle">Informe Psicológico Proyectivo</div>
     <div class="report-title">Test de Rorschach</div>
+    <div id="report-nombre" style="font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:var(--ink2);margin-top:6px;"></div>
     <div class="report-date" id="report-date"></div>
   </div>
 
@@ -363,9 +472,13 @@
     y <strong>NO</strong> constituyen un diagnóstico clínico. Los sistemas de puntuación validados
     (Exner, R-PAS) requieren administración e interpretación por psicólogos especializados.
   </div>
-  <button class="btn-reiniciar" onclick="reiniciar()">↺ Nueva Evaluación</button>
+  <div class="report-btns">
+    <button class="btn-pdf" onclick="generarPDF()">⬇ Descargar PDF</button>
+    <button class="btn-reiniciar" onclick="reiniciar()">↺ Nueva Evaluación</button>
+  </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 // ════════════════════════════════════════
 // DATOS
@@ -420,11 +533,13 @@ let laminaActual  = 0;
 let respuestas    = [];
 let timerInterval = null;
 let tiempoInicio  = null;
+let nombreEvaluado = '';
 
 // ════════════════════════════════════════
 // INICIO
 // ════════════════════════════════════════
 function iniciarTest() {
+  nombreEvaluado = (document.getElementById('input-nombre').value || 'Sin nombre').trim();
   respuestas = LAMINAS.map(() => ({ categorias:[], localizacion:null, texto:'', tiempo:0 }));
   document.getElementById('screen-intro').style.display = 'none';
   document.getElementById('screen-test').style.display  = 'block';
@@ -646,6 +761,7 @@ function mostrarInforme() {
   window.scrollTo(0,0);
 
   const now = new Date();
+  document.getElementById('report-nombre').textContent = nombreEvaluado;
   document.getElementById('report-date').textContent =
     now.toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'}) +
     ' · ' + now.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
@@ -703,8 +819,51 @@ function reiniciar() {
   clearInterval(timerInterval);
   document.getElementById('screen-report').style.display = 'none';
   document.getElementById('screen-intro').style.display  = 'flex';
+  document.getElementById('input-nombre').value = '';
   window.scrollTo(0,0);
 }
 </script>
+
+<!-- ══ MODAL ACERCA DE ══════════════════════════════ -->
+<div class="modal-overlay" id="modal-acerca">
+  <div class="modal-box">
+    <button class="modal-close" onclick="cerrarModal()" title="Cerrar">✕</button>
+    <div class="modal-title">Test de Rorschach</div>
+    <span class="modal-version">Versión 2.0 · 2026</span>
+
+    <div class="modal-section">
+      <strong>Descripción</strong>
+      Aplicación educativa interactiva basada en el test proyectivo de Hermann Rorschach (1921).
+      Presenta las 10 láminas originales, recoge respuestas mediante categorías y texto libre,
+      y genera un informe exploratorio con perfil psicológico por dimensiones y narrativa.
+    </div>
+
+    <div class="modal-section">
+      <strong>Autor</strong>
+      José Manuel Fernández Carreira
+    </div>
+
+    <div class="modal-agradec">
+      <strong style="display:block;margin-bottom:10px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gold)">Agradecimientos</strong>
+      <div style="margin-bottom:10px;">
+        <span class="pers">Marga Sánchez Torres</span><br>
+        <span class="role">Psicóloga</span>
+      </div>
+      <div>
+        <span class="pers">Juan José Martínez Jambrina</span><br>
+        <span class="role">Psiquiatra</span>
+      </div>
+    </div>
+
+    <div class="modal-section" style="margin-top:16px;margin-bottom:0;font-size:10px;opacity:.6">
+      Este software es de uso educativo. No sustituye la evaluación clínica profesional.
+      Las interpretaciones se basan en la psicología proyectiva clásica.
+    </div>
+  </div>
+</div>
+
+<!-- Botón flotante Acerca de -->
+<button class="btn-acerca" onclick="abrirModal()">ℹ Acerca de...</button>
+
 </body>
 </html>
