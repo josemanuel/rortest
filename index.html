@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -155,7 +155,7 @@
     margin-bottom: 20px;
   }
 
-  /* SVG MANCHA */
+  /* IMAGEN LÁMINA */
   .inkblot-container {
     display: flex; justify-content: center; align-items: center;
     background: var(--paper);
@@ -164,10 +164,27 @@
     min-height: 280px;
     position: relative;
   }
-  .inkblot-container svg {
-    max-width: 340px; max-height: 240px;
-    filter: drop-shadow(0 4px 20px rgba(0,0,0,0.4));
+  .inkblot-img {
+    max-width: 360px;
+    max-height: 280px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 20px rgba(0,0,0,0.35));
+    transition: opacity 0.4s ease;
   }
+  .inkblot-img.cargando { opacity: 0; }
+  .inkblot-img.cargado  { opacity: 1; }
+
+  .img-error {
+    display: none;
+    flex-direction: column; align-items: center; gap: 10px;
+    color: var(--gray); font-size: 12px; text-align: center;
+  }
+  .img-error-icon { font-size: 36px; opacity: 0.4; }
+
+  .inkblot-container.con-error .inkblot-img { display: none; }
+  .inkblot-container.con-error .img-error   { display: flex; }
 
   .lamina-num {
     position: absolute; top: 10px; left: 14px;
@@ -434,7 +451,11 @@
   <div class="card fade-in" id="main-card">
     <div class="inkblot-container">
       <span class="lamina-num" id="lamina-num-label">I</span>
-      <svg id="inkblot-svg" viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg"></svg>
+      <img id="inkblot-img" class="inkblot-img cargando" src="" alt="Lámina del Test de Rorschach"/>
+      <div class="img-error" id="img-error">
+        <span class="img-error-icon">🖼</span>
+        <span>Imagen no encontrada.<br>Coloca <strong id="img-error-name"></strong> en el mismo directorio que este HTML.</span>
+      </div>
     </div>
 
     <p class="instruccion">"Dígame qué podría ser esto. No hay respuestas correctas o incorrectas."</p>
@@ -589,205 +610,6 @@ const DIMS = [
   { key: 'fantasia', label: 'Creatividad / Fantasía', low: 'Orientación realista', high: 'Riqueza imaginativa' },
 ];
 
-// ============================================================
-// GENERADOR SVG DE MANCHAS
-// ============================================================
-function seededRandom(seed) {
-  let s = seed;
-  return function() {
-    s = (s * 9301 + 49297) % 233280;
-    return s / 233280;
-  };
-}
-
-function generatePath(rng, cx, cy, rx, ry, pts, rough) {
-  const points = [];
-  for (let i = 0; i < pts; i++) {
-    const angle = (i / pts) * Math.PI * 2;
-    const r = (0.5 + rng() * 0.5);
-    const px = cx + Math.cos(angle) * rx * r + (rng() - 0.5) * rough;
-    const py = cy + Math.sin(angle) * ry * r + (rng() - 0.5) * rough;
-    points.push([px, py]);
-  }
-  // Curvas suaves
-  let d = `M ${points[0][0]} ${points[0][1]}`;
-  for (let i = 0; i < points.length; i++) {
-    const p1 = points[i];
-    const p2 = points[(i + 1) % points.length];
-    const mx = (p1[0] + p2[0]) / 2;
-    const my = (p1[1] + p2[1]) / 2;
-    d += ` Q ${p1[0]} ${p1[1]} ${mx} ${my}`;
-  }
-  d += ' Z';
-  return d;
-}
-
-function generateBlob(rng, cx, cy, rx, ry, count) {
-  let paths = '';
-  for (let i = 0; i < count; i++) {
-    const ox = (rng() - 0.5) * rx * 0.6;
-    const oy = (rng() - 0.5) * ry * 0.6;
-    const srx = rx * (0.3 + rng() * 0.6);
-    const sry = ry * (0.2 + rng() * 0.5);
-    const pts = 8 + Math.floor(rng() * 6);
-    const rough = 6 + rng() * 14;
-    const opacity = 0.4 + rng() * 0.6;
-    const d = generatePath(rng, cx + ox, cy + oy, srx, sry, pts, rough);
-    paths += `<path d="${d}" opacity="${opacity.toFixed(2)}"/>`;
-  }
-  return paths;
-}
-
-function mirrorPath(pathStr, cx) {
-  // Refleja los paths en x alrededor de cx
-  return pathStr.replace(/-?\d+\.?\d*/g, (match, offset, str) => {
-    // Determinar si es coordenada X (simplificación: alternamos)
-    return match; // devolvemos sin cambio (usamos transform="scale(-1,1)")
-  });
-}
-
-function generateInkblot(lamina) {
-  const rng = seededRandom(lamina.seed);
-  const W = 340, H = 220;
-  const cx = W / 2, cy = H / 2;
-
-  let svg = '';
-  const tipo = lamina.tipo;
-  const color = lamina.colores[0];
-
-  // Fondo papel
-  svg += `<rect width="${W}" height="${H}" fill="#f2ede6"/>`;
-
-  // Grupo principal (mitad derecha, luego se espeja)
-  const blobCount = 5 + Math.floor(rng() * 5);
-
-  if (tipo === 'bilateral' || tipo === 'mariposa') {
-    const rx = 70 + rng() * 30;
-    const ry = 55 + rng() * 25;
-    // mitad derecha
-    svg += `<g fill="${color}">`;
-    svg += generateBlob(rng, cx + 20, cy, rx, ry, blobCount);
-    svg += `</g>`;
-    // espejo mitad izquierda
-    svg += `<g fill="${color}" transform="scale(-1,1) translate(-${W},0)">`;
-    svg += generateBlob(seededRandom(lamina.seed), cx + 20, cy, rx, ry, blobCount);
-    svg += `</g>`;
-    // centro
-    svg += `<g fill="${color}">`;
-    svg += generateBlob(rng, cx, cy, 20, ry * 0.8, 3);
-    svg += `</g>`;
-  }
-  else if (tipo === 'bilateral_rojo' || tipo === 'bilateral_rojo2') {
-    const rx = 60 + rng() * 25;
-    const ry = 50 + rng() * 20;
-    // negro
-    svg += `<g fill="${color}">`;
-    svg += generateBlob(rng, cx + 30, cy + 10, rx, ry, 4);
-    svg += `</g>`;
-    svg += `<g fill="${color}" transform="scale(-1,1) translate(-${W},0)">`;
-    svg += generateBlob(seededRandom(lamina.seed), cx + 30, cy + 10, rx, ry, 4);
-    svg += `</g>`;
-    // rojo
-    const rojo = lamina.colores[1];
-    svg += `<g fill="${rojo}">`;
-    const rngR = seededRandom(lamina.seed + 50);
-    svg += generateBlob(rngR, cx, cy - 40, 28, 22, 2);
-    svg += generateBlob(rngR, cx + 55, cy + 55, 22, 18, 2);
-    svg += `</g>`;
-    svg += `<g fill="${rojo}" transform="scale(-1,1) translate(-${W},0)">`;
-    const rngR2 = seededRandom(lamina.seed + 50);
-    svg += generateBlob(rngR2, cx, cy - 40, 28, 22, 2);
-    svg += generateBlob(rngR2, cx + 55, cy + 55, 22, 18, 2);
-    svg += `</g>`;
-  }
-  else if (tipo === 'grande_oscuro') {
-    const rx = 90; const ry = 70;
-    svg += `<g fill="${color}">`;
-    svg += generateBlob(rng, cx + 20, cy + 10, rx, ry, 7);
-    svg += `</g>`;
-    svg += `<g fill="${color}" transform="scale(-1,1) translate(-${W},0)">`;
-    svg += generateBlob(seededRandom(lamina.seed), cx + 20, cy + 10, rx, ry, 7);
-    svg += `</g>`;
-    svg += `<g fill="${color}">`;
-    svg += generateBlob(seededRandom(lamina.seed+1), cx, cy, 16, ry * 0.9, 3);
-    svg += `</g>`;
-  }
-  else if (tipo === 'vertical') {
-    svg += `<g fill="${color}">`;
-    svg += generateBlob(rng, cx + 22, cy, 55, 80, 6);
-    svg += `</g>`;
-    svg += `<g fill="${color}" transform="scale(-1,1) translate(-${W},0)">`;
-    svg += generateBlob(seededRandom(lamina.seed), cx + 22, cy, 55, 80, 6);
-    svg += `</g>`;
-    // parte superior vertical
-    svg += `<g fill="${color}">`;
-    svg += generateBlob(seededRandom(lamina.seed+2), cx, cy - 50, 12, 40, 3);
-    svg += `</g>`;
-  }
-  else if (tipo === 'nubes') {
-    svg += `<g fill="${color}">`;
-    svg += generateBlob(rng, cx + 30, cy - 20, 50, 55, 5);
-    svg += generateBlob(rng, cx + 20, cy + 40, 40, 30, 3);
-    svg += `</g>`;
-    svg += `<g fill="${color}" transform="scale(-1,1) translate(-${W},0)">`;
-    const rng2 = seededRandom(lamina.seed);
-    svg += generateBlob(rng2, cx + 30, cy - 20, 50, 55, 5);
-    svg += generateBlob(rng2, cx + 20, cy + 40, 40, 30, 3);
-    svg += `</g>`;
-  }
-  else if (tipo === 'color_lateral') {
-    const colores = lamina.colores;
-    for (let ci = 0; ci < colores.length; ci++) {
-      const rngC = seededRandom(lamina.seed + ci * 37);
-      const offY = (ci - 1) * 50;
-      svg += `<g fill="${colores[ci]}">`;
-      svg += generateBlob(rngC, cx + 50, cy + offY, 40, 30, 3);
-      svg += `</g>`;
-      svg += `<g fill="${colores[ci]}" transform="scale(-1,1) translate(-${W},0)">`;
-      svg += generateBlob(seededRandom(lamina.seed + ci * 37), cx + 50, cy + offY, 40, 30, 3);
-      svg += `</g>`;
-    }
-    // gris centro
-    svg += `<g fill="${color}">`;
-    svg += generateBlob(seededRandom(lamina.seed + 99), cx, cy, 30, 60, 4);
-    svg += `</g>`;
-  }
-  else if (tipo === 'color_central') {
-    const colores = lamina.colores;
-    for (let ci = 0; ci < colores.length; ci++) {
-      const rngC = seededRandom(lamina.seed + ci * 53);
-      const offX = (ci - 1) * 45;
-      svg += `<g fill="${colores[ci]}">`;
-      svg += generateBlob(rngC, cx + offX + 15, cy, 45, 40, 4);
-      svg += `</g>`;
-      svg += `<g fill="${colores[ci]}" transform="scale(-1,1) translate(-${W},0)">`;
-      svg += generateBlob(seededRandom(lamina.seed + ci * 53), cx + offX + 15, cy, 45, 40, 4);
-      svg += `</g>`;
-    }
-  }
-  else if (tipo === 'color_multiple') {
-    const colores = lamina.colores;
-    const positions = [
-      [cx + 40, cy - 60], [cx + 80, cy + 10], [cx + 40, cy + 60],
-      [cx + 10, cy - 20], [cx + 60, cy - 30]
-    ];
-    for (let pi = 0; pi < positions.length; pi++) {
-      const col = colores[pi % colores.length];
-      const rngC = seededRandom(lamina.seed + pi * 17);
-      svg += `<g fill="${col}">`;
-      svg += generateBlob(rngC, positions[pi][0], positions[pi][1], 30, 24, 3);
-      svg += `</g>`;
-      svg += `<g fill="${col}" transform="scale(-1,1) translate(-${W},0)">`;
-      svg += generateBlob(seededRandom(lamina.seed + pi * 17), positions[pi][0], positions[pi][1], 30, 24, 3);
-      svg += `</g>`;
-    }
-  }
-
-  // Textura de grano sutil
-  svg += `<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feBlend in="SourceGraphic" mode="multiply"/></filter>`;
-
-  return svg;
-}
 
 // ============================================================
 // ESTADO DE LA APP
@@ -817,12 +639,29 @@ function renderLamina(idx) {
   document.getElementById('btn-anterior').style.visibility = idx === 0 ? 'hidden' : 'visible';
   document.getElementById('btn-siguiente').textContent = idx === 9 ? 'Ver Informe →' : 'Siguiente →';
 
-  // Generar SVG
-  const svg = document.getElementById('inkblot-svg');
-  svg.innerHTML = generateInkblot(lamina);
-  svg.classList.remove('ink-anim');
-  void svg.offsetWidth; // reflow
-  svg.classList.add('ink-anim');
+  // Cargar imagen real
+  const img = document.getElementById('inkblot-img');
+  const container = document.getElementById('inkblot-container');
+  const errDiv = document.getElementById('img-error');
+  const errName = document.getElementById('img-error-name');
+  const fileName = `${idx + 1}.jpg`;
+
+  // Reset estado
+  img.classList.remove('cargado');
+  img.classList.add('cargando');
+  container.classList.remove('con-error');
+
+  img.onload = () => {
+    img.classList.remove('cargando');
+    img.classList.add('cargado');
+    container.classList.remove('con-error');
+  };
+  img.onerror = () => {
+    container.classList.add('con-error');
+    errName.textContent = fileName;
+  };
+
+  img.src = fileName;
 
   // Categorías
   const catGrid = document.getElementById('cat-grid');
