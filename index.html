@@ -822,6 +822,149 @@ function reiniciar() {
   document.getElementById('input-nombre').value = '';
   window.scrollTo(0,0);
 }
+
+// ════════════════════════════════════════
+// MODAL ACERCA DE
+// ════════════════════════════════════════
+function abrirModal()  { document.getElementById('modal-acerca').classList.add('open'); }
+function cerrarModal() { document.getElementById('modal-acerca').classList.remove('open'); }
+
+// Listeners inicializados cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('keydown', function(e) { if(e.key==='Escape') cerrarModal(); });
+  var overlay = document.getElementById('modal-acerca');
+  if (overlay) {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) cerrarModal();
+    });
+  }
+});
+
+// ════════════════════════════════════════
+// GENERACIÓN PDF
+// ════════════════════════════════════════
+function generarPDF() {
+  // jsPDF puede estar en window.jspdf o window.jsPDF según versión del CDN
+  var jsPDFLib = window.jspdf || window.jsPDF;
+  if (!jsPDFLib || !jsPDFLib.jsPDF) {
+    alert('La librería PDF aún no está cargada. Espera un momento y vuelve a intentarlo.');
+    return;
+  }
+  const { jsPDF } = jsPDFLib;
+  const doc = new jsPDF({ unit:'mm', format:'a4' });
+  const PW = 210, M = 18;
+  let y = 20;
+
+  function addText(txt, size, style, rgb) {
+    doc.setFontSize(size||10);
+    doc.setFont('helvetica', style||'normal');
+    doc.setTextColor(rgb[0], rgb[1], rgb[2]);
+    const lines = doc.splitTextToSize(String(txt), PW - M*2);
+    lines.forEach(l => {
+      if (y > 275) { doc.addPage(); y = 20; }
+      doc.text(l, M, y);
+      y += (size||10) * 0.44;
+    });
+    y += 1.5;
+  }
+
+  function hRule(rgb) {
+    doc.setDrawColor((rgb||[192,181,168])[0],(rgb||[192,181,168])[1],(rgb||[192,181,168])[2]);
+    doc.line(M, y, PW-M, y); y += 5;
+  }
+
+  // Cabecera
+  doc.setFillColor(250,247,242);
+  doc.rect(M-4, y-6, PW-M*2+8, 40, 'F');
+  doc.setDrawColor(138,104,32);
+  doc.rect(M-4, y-6, PW-M*2+8, 40);
+  addText('INFORME PSICOLÓGICO PROYECTIVO', 8, 'normal', [138,104,32]);
+  addText('Test de Rorschach', 20, 'bold', [28,24,20]);
+  if (nombreEvaluado && nombreEvaluado !== 'Sin nombre') {
+    addText(nombreEvaluado, 13, 'italic', [74,69,64]);
+  }
+  const now = new Date();
+  const fecha = now.toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'});
+  const hora  = now.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+  addText(fecha + '  \u00b7  ' + hora, 8, 'normal', [130,120,110]);
+  y += 8;
+
+  // Aviso clínico
+  doc.setFillColor(255,242,242); doc.setDrawColor(180,80,80);
+  doc.rect(M, y, PW-M*2, 14, 'FD');
+  doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(120,20,20);
+  doc.text('AVISO: Este informe es educativo y exploratorio. No constituye diagnóstico clínico.', M+3, y+5);
+  doc.text('Los resultados requieren interpretación por un psicólogo o psiquiatra especializado.', M+3, y+10);
+  y += 20;
+
+  // Dimensiones
+  addText('PERFIL POR DIMENSIONES PSICOLÓGICAS', 11, 'bold', [138,104,32]);
+  hRule([192,181,168]);
+  const dims = calcularDims();
+  DIMS.forEach(d => {
+    const val = dims[d.key];
+    if (y > 265) { doc.addPage(); y = 20; }
+    addText(d.label, 9, 'bold', [28,24,20]);
+    doc.setFillColor(228,221,211);
+    doc.rect(M, y, PW-M*2, 5, 'F');
+    doc.setFillColor(138,104,32);
+    doc.rect(M, y, (PW-M*2) * val/100, 5, 'F');
+    y += 8;
+    doc.setFontSize(8); doc.setFont('helvetica','italic'); doc.setTextColor(110,100,90);
+    doc.text(d.low, M, y);
+    doc.text(d.high, PW-M, y, {align:'right'});
+    doc.setFont('helvetica','bold'); doc.setTextColor(138,104,32);
+    doc.text(val + '%', PW/2, y, {align:'center'});
+    y += 7;
+  });
+  y += 5;
+
+  // Narrativa
+  if (y > 220) { doc.addPage(); y = 20; }
+  addText('PERFIL NARRATIVO DE PERSONALIDAD', 11, 'bold', [138,104,32]);
+  hRule([192,181,168]);
+  addText(generarNarrativa(dims), 10, 'italic', [74,69,64]);
+  y += 6;
+
+  // Registro por lámina
+  if (y > 240) { doc.addPage(); y = 20; }
+  addText('REGISTRO POR LÁMINA', 11, 'bold', [138,104,32]);
+  hRule([192,181,168]);
+
+  LAMINAS.forEach((lam, i) => {
+    const r = respuestas[i];
+    if (y > 265) { doc.addPage(); y = 20; }
+    const min = String(Math.floor(r.tiempo/60)).padStart(2,'0');
+    const sec = String(r.tiempo%60).padStart(2,'0');
+    const cats = r.categorias
+      .map(id => {
+        const cat = CATEGORIAS.find(c => c.id === id);
+        return cat ? cat.label.replace(/\p{Emoji}/gu,'').trim() : id;
+      }).join(', ');
+
+    doc.setFillColor(238,232,222);
+    doc.rect(M, y-3, PW-M*2, 8, 'F');
+    addText('LÁMINA ' + lam.num + '  \u00b7  Tiempo: ' + min + ':' + sec + (r.localizacion ? '  \u00b7  Loc: ' + r.localizacion : ''), 9, 'bold', [28,24,20]);
+    if (r.texto) addText(r.texto, 9, 'normal', [74,69,64]);
+    if (cats)    addText('Categorías: ' + cats, 8, 'italic', [110,100,90]);
+    y += 3;
+  });
+
+  // Pie de página
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let pg = 1; pg <= totalPages; pg++) {
+    doc.setPage(pg);
+    doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(160,150,140);
+    doc.text('Test de Rorschach v2.0  \u00b7  Autor: José Manuel Fernández Carreira', M, 290);
+    doc.text('Agradecimientos: Marga Sánchez Torres (Psicóloga) \u00b7 Juan José Martínez Jambrina (Psiquiatra)', M, 294);
+    doc.text(pg + ' / ' + totalPages, PW-M, 294, {align:'right'});
+  }
+
+  const safe = (nombreEvaluado||'rorschach').replace(/\s+/g,'_').substring(0,30);
+  const dateStr = now.toISOString().slice(0,10);
+  doc.save('Rorschach_' + safe + '_' + dateStr + '.pdf');
+}
+
 </script>
 
 <!-- ══ MODAL ACERCA DE ══════════════════════════════ -->
