@@ -347,6 +347,15 @@
   .modal-agradec .role { font-size:10px; color:var(--gold); letter-spacing:1px; }
 
   /* ── BOTÓN ACERCA DE (flotante esquina) ── */
+  .btn-acerca-inline {
+    background: transparent; border: none;
+    color: var(--ink2); font-family: 'Courier Prime', monospace;
+    font-size: 11px; letter-spacing: 1px; cursor: pointer;
+    text-decoration: underline; opacity: .6; transition: opacity .2s;
+    padding: 4px 0;
+  }
+  .btn-acerca-inline:hover { opacity: 1; }
+
   .btn-acerca {
     position:fixed; bottom:18px; right:18px;
     background:var(--surface); border:1px solid var(--border);
@@ -388,6 +397,9 @@
         placeholder="Introduzca nombre y apellidos..." autocomplete="off"/>
     </div>
     <button class="btn-primary" onclick="iniciarTest()">Comenzar Evaluación</button>
+    <div style="margin-top:14px;">
+      <button class="btn-acerca-inline" onclick="abrirModal()">ℹ Acerca de esta aplicación...</button>
+    </div>
   </div>
 </div>
 
@@ -496,34 +508,63 @@ const LAMINAS = [
   { num:'X',    nombre:'Lámina X' },
 ];
 
+// ── CATEGORÍAS basadas en Brinkmann (2014), Exner CS y R-PAS (Mihura & Meyer, 2018)
 const CATEGORIAS = [
-  { id:'H',    label:'👤 Figura humana',       dim:'social' },
-  { id:'Hd',   label:'🫂 Parte humana',         dim:'social' },
-  { id:'A',    label:'🐾 Animal completo',      dim:'convencional' },
-  { id:'Ad',   label:'🦷 Parte animal',         dim:'convencional' },
-  { id:'An',   label:'🫀 Anatomía',             dim:'ansiedad' },
-  { id:'Sx',   label:'⚡ Sexual',               dim:'impulso' },
-  { id:'Bl',   label:'🩸 Sangre',               dim:'ansiedad' },
-  { id:'Fire', label:'🔥 Fuego / Explosión',    dim:'impulso' },
-  { id:'Nat',  label:'🌿 Naturaleza',            dim:'recursos' },
-  { id:'Geo',  label:'🗺 Geografía / Mapa',      dim:'recursos' },
-  { id:'Obj',  label:'🔧 Objeto / Herramienta',  dim:'control' },
-  { id:'Arq',  label:'🏛 Arquitectura',          dim:'control' },
-  { id:'Sim',  label:'✨ Símbolo / Emblema',     dim:'abstraccion' },
-  { id:'Abs',  label:'🌀 Abstracto',             dim:'abstraccion' },
-  { id:'Mito', label:'🐉 Monstruo / Mito',       dim:'fantasia' },
-  { id:'Sci',  label:'🔭 Ciencia / Espacio',     dim:'fantasia' },
+  // Contenidos Humanos
+  { id:'H',    label:'👤 H — Figura humana',        dim:'social',       desc:'Figura humana completa real' },
+  { id:'Hd',   label:'🫂 Hd — Detalle humano',      dim:'social',       desc:'Parte o detalle de figura humana' },
+  { id:'Hm',   label:'🧝 (H) — Humano ficticio',    dim:'fantasia',     desc:'Figura humana mítica, ficticia o disfrazada' },
+  // Contenidos Animales
+  { id:'A',    label:'🐾 A — Animal completo',      dim:'convencional', desc:'Figura animal completa' },
+  { id:'Ad',   label:'🦷 Ad — Detalle animal',      dim:'convencional', desc:'Parte o detalle de animal' },
+  { id:'Am',   label:'🐉 (A) — Animal ficticio',    dim:'fantasia',     desc:'Animal mitológico o fantástico' },
+  // Movimiento
+  { id:'M',    label:'🏃 M — Movimiento humano',    dim:'ideativo',     desc:'Acción o postura humana activa' },
+  { id:'FM',   label:'🦅 FM — Movimiento animal',   dim:'impulso',      desc:'Animal en acción o movimiento' },
+  { id:'m',    label:'💨 m — Movimiento inanimado', dim:'tension',      desc:'Fuerzas o movimiento de objetos' },
+  // Color y Afecto
+  { id:'FC',   label:'🎨 FC — Forma-Color',         dim:'afecto',       desc:'Forma primaria + color secundario (afecto maduro)' },
+  { id:'CF',   label:'🌈 CF — Color-Forma',         dim:'afecto',       desc:'Color primario + forma secundaria (afecto intenso)' },
+  { id:'C',    label:'🔴 C — Color puro',           dim:'afecto',       desc:'Solo color, sin forma (impulsividad afectiva)' },
+  { id:'Ca',   label:'🖤 C\' — Color acromático',   dim:'afecto',       desc:'Uso de negro/gris/blanco como color (inhibición)' },
+  // Claroscuro
+  { id:'T',    label:'🤚 T — Textura',              dim:'apego',        desc:'Sensación táctil, necesidad de contacto/afecto' },
+  { id:'V',    label:'🔭 V — Vista/Profundidad',    dim:'autocritica',  desc:'Perspectiva o dimensión por claroscuro (autocrítica)' },
+  { id:'Y',    label:'🌫 Y — Sombreado difuso',     dim:'tension',      desc:'Uso difuso del claroscuro (ansiedad difusa)' },
+  // Especiales
+  { id:'An',   label:'🫀 An — Anatomía',            dim:'tension',      desc:'Partes internas del cuerpo (preocupación somática)' },
+  { id:'Bl',   label:'🩸 Bl — Sangre',              dim:'tension',      desc:'Sangre visible (agresividad o angustia)' },
+  { id:'Sx',   label:'⚡ Sx — Sexual',              dim:'impulso',      desc:'Contenido sexual explícito' },
+  { id:'Ex',   label:'💥 Ex — Explosión/Fuego',     dim:'impulso',      desc:'Explosiones, erupciones, fuego' },
+  { id:'MOR',  label:'💀 MOR — Mórbido',            dim:'tension',      desc:'Objetos dañados, muertos o deteriorados (Exner/R-PAS)' },
+  { id:'AG',   label:'⚔️ AG — Agresión',            dim:'impulso',      desc:'Movimiento agresivo activo (R-PAS)' },
+  { id:'COP',  label:'🤝 COP — Cooperación',        dim:'social',       desc:'Movimiento cooperativo entre objetos (R-PAS)' },
+  // Otros contenidos
+  { id:'Bt',   label:'🌿 Bt — Botánica',            dim:'recursos',     desc:'Plantas, flores, árboles' },
+  { id:'Geo',  label:'🗺 Geo — Geografía',           dim:'recursos',     desc:'Mapas, paisajes, continentes' },
+  { id:'Obj',  label:'🔧 Obj — Objeto',             dim:'control',      desc:'Objetos, herramientas, utensilios' },
+  { id:'Abs',  label:'🌀 Ab — Abstracto',           dim:'abstraccion',  desc:'Contenidos abstractos o simbólicos' },
+  { id:'P',    label:'⭐ P — Respuesta Popular',     dim:'convencional', desc:'Una de las respuestas estadísticamente frecuentes' },
 ];
 
+// ── DIMENSIONES interpretativas basadas en Brinkmann (2014), Exner CS y R-PAS
+// Organizadas según las 3 áreas clásicas: Pensamiento/Intelecto · Afectividad · Relaciones
 const DIMS = [
-  { key:'social',       label:'Orientación Social',       low:'Introversión / autonomía',       high:'Empatía / sociabilidad' },
-  { key:'convencional', label:'Pensamiento Convencional', low:'Originalidad / divergencia',      high:'Adaptación / popularidad' },
-  { key:'ansiedad',     label:'Tensión Interna',          low:'Calma emocional',                 high:'Sensibilidad afectiva' },
-  { key:'impulso',      label:'Vitalidad / Impulso',      low:'Contención afectiva',             high:'Expresividad / vitalidad' },
-  { key:'recursos',     label:'Recursos Adaptativos',     low:'Estilo focalizado',               high:'Amplitud de intereses' },
-  { key:'control',      label:'Control y Estructura',     low:'Pensamiento flexible',            high:'Necesidad de orden' },
-  { key:'abstraccion',  label:'Abstracción / Simbolismo', low:'Orientación concreta',            high:'Alto simbolismo' },
-  { key:'fantasia',     label:'Creatividad / Fantasía',   low:'Orientación realista',            high:'Riqueza imaginativa' },
+  // ÁREA I — Pensamiento y actividad intelectual
+  { key:'productividad',  label:'Productividad / Riqueza ideativa',  low:'Protocolo corto, inhibición o pobreza ideas',      high:'Alta productividad, riqueza asociativa',      area:'I' },
+  { key:'convencional',   label:'Pensamiento Convencional (P)',       low:'Pensamiento original, divergente',                  high:'Buen sentido común, adaptación normativa',    area:'I' },
+  { key:'ideativo',       label:'Vida interior / Ideación (M)',       low:'Orientación práctica, poco ensimismamiento',        high:'Rica vida interior, capacidad imaginativa',   area:'I' },
+  { key:'abstraccion',    label:'Abstracción / Simbolismo',           low:'Orientación concreta y directa',                    high:'Alto nivel de simbolización',                 area:'I' },
+  { key:'control',        label:'Control formal (F%)',                low:'Pensamiento flexible, menos controlado',            high:'Control racional rígido de los afectos',      area:'I' },
+  // ÁREA II — Afectividad
+  { key:'afecto',         label:'Tipo Vivencial (M:C)',               low:'Tipo introversivo — vida interior > afecto',        high:'Tipo extratensivo — afecto > vida interior',  area:'II' },
+  { key:'impulso',        label:'Impulsividad afectiva (C/CF/FC)',    low:'Afecto maduro, modulado (FC predomina)',            high:'Afecto impulsivo o poco modulado (C/CF)',     area:'II' },
+  { key:'tension',        label:'Tensión / Estrés (m, Y, MOR)',       low:'Estabilidad emocional, bajo malestar',              high:'Malestar interno, tensión o angustia',        area:'II' },
+  { key:'apego',          label:'Necesidad de contacto (T)',          low:'Autonomía afectiva, autosuficiencia',               high:'Alta necesidad de afecto y contacto',         area:'II' },
+  { key:'autocritica',    label:'Autocrítica / Introspección (V)',    low:'Poca autocrítica, orientación externa',             high:'Marcada autocrítica o autoevaluación negativa', area:'II' },
+  // ÁREA III — Relaciones interpersonales
+  { key:'social',         label:'Interés por los demás (H%)',        low:'Escaso interés interpersonal, aislamiento',         high:'Fuerte interés por los demás, empatía',       area:'III' },
+  { key:'fantasia',       label:'Fantasía / Figuras ficticias (H)',   low:'Contacto directo y realista con personas',          high:'Relación mediada por fantasía o ficción',     area:'III' },
 ];
 
 // ════════════════════════════════════════
@@ -676,83 +717,275 @@ function irAnterior() {
 // ════════════════════════════════════════
 // INFORME
 // ════════════════════════════════════════
-function calcularDims() {
-  const sc = {};
-  DIMS.forEach(d => { sc[d.key] = 0; });
+// ════════════════════════════════════════
+// MOTOR INTERPRETATIVO — basado en:
+// Brinkmann (2014), Exner CS, R-PAS (Mihura & Meyer, 2018)
+// Bornstein & Masling (2005)
+// ════════════════════════════════════════
 
-  respuestas.forEach(r => {
-    r.categorias.forEach(id => {
-      const cat = CATEGORIAS.find(c => c.id === id);
-      if (cat) sc[cat.dim] += 1;
-    });
-    if (r.localizacion === 'W')  sc.convencional += 0.5;
-    if (r.localizacion === 'D')  sc.control      += 0.3;
-    if (r.localizacion === 'Dd') sc.abstraccion  += 0.4;
-    if (r.localizacion === 'S')  sc.fantasia     += 0.3;
+// Respuestas Populares por lámina (Brinkmann 2014 / Mazzarelli 1998 / Exner)
+const POPULARES = {
+  'I':   ['murciélago','mariposa','máscara'],
+  'II':  ['animales','osos','perros','dos animales'],
+  'III': ['personas','figuras humanas','mariposa','corbata','humita'],
+  'IV':  ['cuero','piel','monstruo','gigante','bota'],
+  'V':   ['murciélago','mariposa','ave','cóndor','pájaro'],
+  'VI':  ['cuero','piel','tótem'],
+  'VII': ['nubes','cabezas','mujeres','niñas','conejo'],
+  'VIII':['animal','oso','camaleón','tigre','gato'],
+  'IX':  [],  // no hay respuestas populares universales
+  'X':   ['jaiba','cangrejo','araña','langosta']
+};
+
+function esPopular(lamNum, texto) {
+  const pops = POPULARES[lamNum] || [];
+  const t = texto.toLowerCase();
+  return pops.some(p => t.includes(p));
+}
+
+function calcularDims() {
+  // ── Conteos brutos por categoría ──────────────────────────────
+  const cnt = {};
+  CATEGORIAS.forEach(c => { cnt[c.id] = 0; });
+  const R = 10; // láminas totales
+
+  let totalTexto = 0;
+  let tiempoTotal = 0;
+  let popularesCount = 0;
+  let locW = 0, locD = 0, locDd = 0, locS = 0;
+
+  respuestas.forEach((r, i) => {
+    const lam = LAMINAS[i];
+    r.categorias.forEach(id => { cnt[id] = (cnt[id]||0) + 1; });
+
+    // Texto libre
     const words = r.texto.trim().split(/\s+/).filter(Boolean).length;
-    sc.recursos += Math.min(words * 0.10, 1.5);
-    sc.social   += Math.min(words * 0.05, 0.8);
+    totalTexto += words;
+    tiempoTotal += r.tiempo;
+
+    // Populares detectadas por texto
+    if (r.categorias.includes('P') || esPopular(lam.num, r.texto)) popularesCount++;
+
+    // Localización
+    if (r.localizacion === 'W')  locW++;
+    if (r.localizacion === 'D')  locD++;
+    if (r.localizacion === 'Dd') locDd++;
+    if (r.localizacion === 'S')  locS++;
   });
 
-  const tiempoMedio = respuestas.reduce((a,r) => a + r.tiempo, 0) / 10;
-  if (tiempoMedio > 60) sc.control += 1;
+  // ── Derivaciones clínicas ─────────────────────────────────────
+  // M (movimiento humano): vida interior / ideación
+  const M = cnt['M'] || 0;
+  // FM (movimiento animal): impulsos instintivos
+  const FM = cnt['FM'] || 0;
+  // m (movimiento inanimado): tensión, conflicto transitorio
+  const m = cnt['m'] || 0;
+  // Color: FC (maduro), CF (intenso), C (impulsivo), Ca (acromático/inhibición)
+  const FC = cnt['FC'] || 0;
+  const CF = cnt['CF'] || 0;
+  const C  = cnt['C']  || 0;
+  const Ca = cnt['Ca'] || 0;
+  // Suma ponderada de color cromático = C + 0.5*CF + 0.5*FC (simplificada Brinkmann)
+  const WSumC = C + CF * 0.75 + FC * 0.5;
+  // Claroscuro
+  const T  = cnt['T']  || 0;
+  const V  = cnt['V']  || 0;
+  const Y  = cnt['Y']  || 0;
+  // Contenidos humanos
+  const H  = cnt['H']  || 0;
+  const Hd = cnt['Hd'] || 0;
+  const Hm = cnt['Hm'] || 0;
+  // Especiales
+  const MOR = cnt['MOR'] || 0;
+  const AG  = cnt['AG']  || 0;
+  const COP = cnt['COP'] || 0;
+  const An  = cnt['An']  || 0;
+  const Bl  = cnt['Bl']  || 0;
+  const Sx  = cnt['Sx']  || 0;
+  const Ex  = cnt['Ex']  || 0;
 
-  const MAX = 9;
-  const norm = {};
-  DIMS.forEach(d => { norm[d.key] = Math.min(Math.round((sc[d.key] / MAX) * 100), 100); });
-  return norm;
+  // Tipo Vivencial (Brinkmann): M vs WSumC
+  // Si M > WSumC → introversivo; si WSumC > M → extratensivo; equilibrio → ambigual
+  // Para la barra: 0=introversivo, 50=ambigual, 100=extratensivo
+  const tvTotal = M + WSumC;
+  const tvAfe   = tvTotal > 0 ? Math.round((WSumC / tvTotal) * 100) : 50;
+
+  // F% (control formal): cuántas respuestas sin color ni movimiento
+  // Aproximamos: respuestas sin categorías de movimiento ni color
+  const respSinAfecto = respuestas.filter(r =>
+    !r.categorias.some(id => ['M','FM','m','FC','CF','C','Ca','T','V','Y'].includes(id))
+  ).length;
+  const fPct = Math.round((respSinAfecto / R) * 100);
+
+  // Productividad: palabras totales escritas + categorías seleccionadas
+  const totalCats = respuestas.reduce((a,r) => a + r.categorias.length, 0);
+  const prodScore  = Math.min(Math.round((totalTexto * 0.4 + totalCats * 3) / 2), 100);
+
+  // Populares: 0=bajo(<3), 50=normal(4-5), 100=alto(>5)
+  const popScore = Math.min(Math.round((popularesCount / 5) * 100), 100);
+
+  // Ideación/M: normalizado a 4M = 100%
+  const mScore   = Math.min(Math.round((M / 4) * 100), 100);
+
+  // Abstracción: (H)+ Ab + símbolos
+  const absScore = Math.min(Math.round(((Hm + (cnt['Abs']||0)) / 4) * 100), 100);
+
+  // Control F%: invertido (100=muy controlado, 0=flexible)
+  const ctrlScore = Math.min(fPct, 100);
+
+  // Afecto (TV): score ya calculado (0=introversivo, 100=extratensivo)
+  const afScore = tvAfe;
+
+  // Impulsividad: C + CF*0.7 vs FC
+  const impScore = Math.min(Math.round(((C + CF * 0.7) / Math.max(FC + C + CF, 1)) * 100), 100);
+
+  // Tensión: m + Y + MOR + Bl + An
+  const tensScore = Math.min(Math.round(((m + Y + MOR + Bl * 0.5 + An * 0.5) / 6) * 100), 100);
+
+  // Apego/necesidad de contacto: T
+  const apegoScore = Math.min(Math.round((T / 3) * 100), 100);
+
+  // Autocrítica: V
+  const autocritScore = Math.min(Math.round((V / 3) * 100), 100);
+
+  // Interés social: H + COP
+  const socialScore = Math.min(Math.round(((H + COP) / 6) * 100), 100);
+
+  // Fantasía vs contacto real: Hm vs H
+  const fantScore = Math.min(Math.round((Hm / Math.max(H + Hm, 1)) * 100), 100);
+
+  return {
+    productividad: prodScore,
+    convencional:  popScore,
+    ideativo:      mScore,
+    abstraccion:   absScore,
+    control:       ctrlScore,
+    afecto:        afScore,
+    impulso:       impScore,
+    tension:       tensScore,
+    apego:         apegoScore,
+    autocritica:   autocritScore,
+    social:        socialScore,
+    fantasia:      fantScore,
+    // datos brutos para la narrativa
+    _raw: { M, FM, m, FC, CF, C, Ca, T, V, Y, H, Hd, Hm, MOR, AG, COP, An, Bl, Sx,
+            WSumC, tvAfe, fPct, popularesCount, totalTexto, locW, locD, locDd, locS }
+  };
 }
 
 function generarNarrativa(dims) {
+  // Narrativa estructurada en 3 áreas (Brinkmann 2014 / Exner CS)
+  const r = dims._raw;
   const p = [];
-  if (dims.social > 60)
-    p.push('La persona muestra una marcada orientación hacia las relaciones humanas, con probable facilidad para la empatía y el contacto social.');
-  else if (dims.social < 30)
-    p.push('Se observa una tendencia hacia la autonomía y el procesamiento interno, con posible preferencia por espacios de soledad o introspección.');
-  else
-    p.push('El balance entre orientación social e introversión sugiere una adaptación flexible al entorno interpersonal.');
 
-  if (dims.convencional > 60)
-    p.push('Predominan respuestas de alta popularidad, lo que indica buena adaptación a las normas sociales y pensamiento práctico.');
-  else if (dims.convencional < 30)
-    p.push('La originalidad de las asociaciones puede señalar creatividad, pensamiento divergente o una perspectiva singular del mundo.');
-  else
-    p.push('Se combinan respuestas convencionales con asociaciones más personales, señalando equilibrio entre norma y originalidad.');
+  // ═══ ÁREA I: PENSAMIENTO Y ACTIVIDAD INTELECTUAL ═══════════════════════
+  p.push('── ÁREA I: Pensamiento y actividad intelectual ──');
 
-  if (dims.ansiedad > 50)
-    p.push('Emergen indicadores de tensión interna o sensibilidad emocional elevada, posiblemente relacionados con preocupaciones somáticas o afectivas.');
+  // Productividad
+  if (dims.productividad < 30)
+    p.push('La productividad del protocolo es baja, lo que puede indicar inhibición intelectual, actitud negativista, o empobrecimiento del pensamiento. Es preciso descartar factores situacionales como ansiedad o falta de colaboración.');
+  else if (dims.productividad > 70)
+    p.push('El protocolo muestra alta productividad asociativa, lo que sugiere riqueza ideativa y buena disposición a la tarea. Debe verificarse que la cantidad no sea a expensas de la calidad de las respuestas.');
   else
-    p.push('El nivel de tensión interna parece contenido, con un procesamiento emocional relativamente estable.');
+    p.push('La productividad se sitúa dentro de límites esperables, con una elaboración verbal que sugiere adecuada disposición a la tarea.');
 
-  if (dims.impulso > 50)
-    p.push('Se percibe vitalidad expresiva y dinamismo afectivo, con probable riqueza en la vida emocional.');
+  // Respuestas populares (Brinkmann: 4-5 = normal; <3 = bajo; >5 = alto)
+  if (r.popularesCount <= 2)
+    p.push(`Las respuestas populares son escasas (${r.popularesCount}), lo que puede indicar pensamiento original o divergente, rechazo de lo convencional, o en casos extremos, pérdida del contacto con la realidad compartida.`);
+  else if (r.popularesCount >= 6)
+    p.push(`El número de respuestas populares es elevado (${r.popularesCount}), indicando una fuerte orientación hacia lo convencional y normativo, con buen sentido de la realidad compartida. Puede reflejar también conformismo o pensamiento estereotipado.`);
   else
-    p.push('La contención afectiva observada puede reflejar control emocional o preferencia por la moderación expresiva.');
+    p.push(`Las respuestas populares (${r.popularesCount}) se sitúan dentro de la norma, indicando adecuado contacto con la realidad y capacidad de pensamiento convencional.`);
 
-  if (dims.recursos > 55)
-    p.push('La amplitud de asociaciones sugiere buena disponibilidad de recursos psicológicos y apertura a experiencias diversas.');
+  // Movimiento humano M (Brinkmann: refleja vida interior, ideación, creatividad)
+  if (r.M === 0)
+    p.push('La ausencia de respuestas de movimiento humano (M) sugiere escasa vida interior elaborada, tendencia al pensamiento concreto o inhibición del pensamiento creativo. Puede indicar también un tipo vivencial coartado o extratensivo.');
+  else if (r.M >= 4)
+    p.push(`La presencia notable de movimiento humano (M=${r.M}) evidencia una rica vida interior, capacidad ideativa e imaginativa. Estos sujetos elaboran bien sus pensamientos y suelen tener iniciativa intelectual. Se relaciona con creatividad y pensamiento abstracto.`);
   else
-    p.push('El número de asociaciones y su elaboración verbal apuntan hacia un estilo más focalizado o selectivo.');
+    p.push(`El movimiento humano (M=${r.M}) indica una vida interior presente y operativa, con capacidad para la elaboración ideativa.`);
 
-  if (dims.control > 60)
-    p.push('La tendencia a estructurar y organizar las percepciones indica necesidad de orden, predictibilidad y control del entorno.');
-  else if (dims.control < 25)
-    p.push('El pensamiento muestra fluidez y flexibilidad, con menor necesidad de estructura formal.');
-  else
-    p.push('Se observa un equilibrio entre flexibilidad y estructura en el modo de procesar la información.');
+  // Tipo Vivencial (Brinkmann: M vs WSumC)
+  const tv = r.tvAfe;
+  if (r.M > 0 && r.WSumC < r.M * 0.5) {
+    p.push(`El Tipo Vivencial muestra un perfil introversivo (M=${r.M} : C≈${r.WSumC.toFixed(1)}): la vida interior y la ideación predominan sobre la reactividad afectiva. Estos sujetos son más reflexivos, prefieren relaciones intensas con pocas personas y pueden tener dificultad para adaptarse espontáneamente al entorno emocional.`);
+  } else if (r.WSumC > r.M * 1.5) {
+    if (r.FC > r.CF + r.C)
+      p.push(`El Tipo Vivencial es extratensivo-adaptativo (M≈${r.M} : C≈${r.WSumC.toFixed(1)}): los afectos predominan sobre la ideación, pero están bien modulados por la forma (FC>CF+C). Buena adaptación social, empatía y facilidad de contacto.`);
+    else
+      p.push(`El Tipo Vivencial es extratensivo-desadaptativo (M≈${r.M} : C≈${r.WSumC.toFixed(1)}): los afectos predominan con escasa modulación racional. Puede implicar impulsividad, egocentrismo afectivo o inestabilidad emocional.`);
+  } else if (r.M === 0 && r.WSumC < 1) {
+    p.push('El Tipo Vivencial es coartado: tanto la vida interior como la reactividad afectiva son mínimas. El sujeto presenta afectividad empobrecida con tendencia al pensamiento lógico-formal. Puede asociarse a humor depresivo o actitud extremadamente controlada.');
+  } else {
+    p.push(`El Tipo Vivencial muestra un perfil ambigual (M≈${r.M} : C≈${r.WSumC.toFixed(1)}), con cierto equilibrio entre vida interior y reactividad afectiva. Implica flexibilidad adaptativa y capacidad tanto para la reflexión como para el contacto emocional.`);
+  }
 
-  if (dims.abstraccion > 55)
-    p.push('El recurso frecuente al simbolismo puede reflejar un pensamiento elaborado, filosófico o artístico.');
-  else
-    p.push('La orientación es predominantemente concreta y directa en la interpretación de estímulos ambiguos.');
+  // F% (control formal)
+  if (r.fPct > 80)
+    p.push(`El control formal es elevado (F%≈${r.fPct}%): el sujeto tiende a suprimir los aspectos afectivos y creativos en favor de un modo de respuesta racional y controlado. Puede reflejar rigidez, inhibición emocional o una defensa intelectualizadora.`);
+  else if (r.fPct < 40)
+    p.push(`El control formal es bajo (F%≈${r.fPct}%): el pensamiento muestra fluidez y apertura a la experiencia emocional, aunque puede indicar escasa capacidad de contención si los otros indicadores apuntan a inestabilidad.`);
 
-  if (dims.fantasia > 55)
-    p.push('La riqueza imaginativa y la capacidad para construir mundos creativos emergen como rasgo destacado.');
-  else
-    p.push('La orientación realista predomina sobre la fantasía, con un procesamiento anclado en lo observable.');
+  // ═══ ÁREA II: AFECTIVIDAD ═══════════════════════════════════════════════
+  p.push('── ÁREA II: Afectividad ──');
 
-  return p.join(' ');
+  // FC / CF / C
+  if (r.FC > r.CF + r.C)
+    p.push(`La afectividad muestra predominio de respuestas FC (FC=${r.FC}, CF=${r.CF}, C=${r.C}): el afecto está bien integrado y modulado racionalmente. Indica madurez emocional, capacidad de empatía y relaciones afectivas estables.`);
+  else if (r.C > 0 || r.CF > r.FC + 1)
+    p.push(`Se observa predominio de color sin modulación de forma (CF=${r.CF}, C=${r.C}, FC=${r.FC}): el afecto tiende a ser intenso, poco modulado y potencialmente impulsivo. Puede manifestarse como reactividad emocional intensa o dificultad para contener las emociones.`);
+  else if (r.FC + r.CF + r.C === 0)
+    p.push('La ausencia de determinantes de color sugiere inhibición o represión de la vida afectiva. El sujeto puede mostrarse distante o indiferente emocionalmente, aunque esto debe interpretarse en el contexto del Tipo Vivencial.');
+
+  // Color acromático C' (inhibición afectiva)
+  if (r.Ca >= 2)
+    p.push(`Las respuestas de color acromático (C'=${r.Ca}) son significativas: el uso del negro/gris como color indica afectos negativos, inhibición emocional o tendencia depresiva. Brinkmann señala que estos determinantes se asocian a afectos distímicos.`);
+
+  // Textura T (necesidad de contacto / Exner / R-PAS)
+  if (r.T >= 2)
+    p.push(`Las respuestas de textura (T=${r.T}) son llamativas: indican una necesidad de contacto afectivo y proximidad física que puede ser intensa o no satisfecha. En R-PAS, T elevado se asocia a necesidad de apego y vulnerabilidad al rechazo.`);
+
+  // Vista V (autocrítica dolorosa)
+  if (r.V >= 1)
+    p.push(`La presencia de respuestas de vista/profundidad (V=${r.V}) indica una tendencia a la autocrítica y autoevaluación negativa. Cuando es elevada, se asocia a depresión y sentimientos de inferioridad (Exner, R-PAS).`);
+
+  // Tensión y estrés
+  if (r.m + r.Y + r.MOR >= 3)
+    p.push(`Los indicadores de tensión interna son significativos (m=${r.m}, Y=${r.Y}, MOR=${r.MOR}): sugieren malestar emocional, ansiedad situacional o crónica, y una visión negativista de sí mismo o del entorno. El MOR elevado se asocia específicamente a depresión (Exner) y pesimismo vital.`);
+
+  // Agresión y cooperación (R-PAS)
+  if (r.AG >= 2)
+    p.push(`La presencia de movimiento agresivo (AG=${r.AG}) es notable. En R-PAS, el AG elevado se asocia a actitudes beligerantes y expectativas de relaciones agresivas o dominantes.`);
+  if (r.COP >= 2)
+    p.push(`Las respuestas cooperativas (COP=${r.COP}) son un indicador positivo: sugieren expectativas benevolentes de las relaciones interpersonales y deseo de vínculos colaborativos (R-PAS).`);
+
+  // ═══ ÁREA III: RELACIONES INTERPERSONALES ═══════════════════════════════
+  p.push('── ÁREA III: Relaciones interpersonales ──');
+
+  // H% (Brinkmann: normal 10-20%)
+  const hTotal = r.H + r.Hd + r.Hm;
+  if (hTotal === 0)
+    p.push('La ausencia de contenidos humanos indica escaso interés por los demás y posible dificultad para la vinculación interpersonal.');
+  else if (r.H > r.Hd + r.Hm)
+    p.push(`Los contenidos humanos muestran predominio de figuras completas (H=${r.H}): el sujeto percibe a los demás de forma íntegra y realista. Indicador de buen contacto interpersonal.`);
+  else if (r.Hm > r.H)
+    p.push(`El predominio de figuras humanas ficticias o antropomorfas (H)=${r.Hm} sobre las reales (H=${r.H}) sugiere dificultad para relacionarse con personas reales, con posible mediación de la fantasía o distorsión en la percepción de los otros.`);
+  else if (r.Hd > r.H)
+    p.push(`El predominio de detalles humanos (Hd=${r.Hd}) sobre figuras completas (H=${r.H}) puede reflejar desconfianza, cautelosa fragmentación del otro o ansiedad interpersonal.`);
+
+  // COP y AG en relaciones
+  if (r.COP > r.AG)
+    p.push('Las expectativas hacia los vínculos son predominantemente cooperativas y positivas.');
+  else if (r.AG > r.COP && r.AG >= 2)
+    p.push('Las expectativas vinculares muestran sesgo hacia la confrontación o la agresividad, lo que puede dificultar las relaciones interpersonales armónicas.');
+
+  // Síntesis final
+  p.push('── Nota clínica ──');
+  p.push('Este perfil es de carácter exploratorio y educativo, generado a partir de categorías seleccionadas por el evaluado. Un sistema de puntuación clínico validado (Sistema Comprehensivo de Exner o R-PAS) requiere administración presencial, codificación formal y normativas poblacionales por edad y género. Los resultados aquí presentados no constituyen diagnóstico.');
+
+  return p.join('\n\n');
 }
+
 
 function mostrarInforme() {
   clearInterval(timerInterval);
@@ -768,18 +1001,36 @@ function mostrarInforme() {
 
   const dims = calcularDims();
 
-  // Barras
+  // Barras agrupadas en 3 áreas
   const dimBars = document.getElementById('dim-bars');
   dimBars.innerHTML = '';
+
+  const areaLabels = {
+    'I':   'Área I — Pensamiento y Actividad Intelectual',
+    'II':  'Área II — Afectividad',
+    'III': 'Área III — Relaciones Interpersonales'
+  };
+  const areaColors = { 'I':'#8a6820', 'II':'#7a3a3a', 'III':'#3a5a7a' };
+  let currentArea = '';
+
   DIMS.forEach(d => {
-    const val = dims[d.key];
+    if (d.area !== currentArea) {
+      currentArea = d.area;
+      const header = document.createElement('div');
+      header.style = `font-size:11px;letter-spacing:2px;text-transform:uppercase;
+        color:${areaColors[d.area]};margin:${d.area==='I'?'0':'18px'} 0 10px;
+        padding-bottom:6px;border-bottom:1px solid var(--border);font-weight:700;`;
+      header.textContent = areaLabels[d.area];
+      dimBars.appendChild(header);
+    }
+    const val = dims[d.key] !== undefined ? dims[d.key] : 0;
     const block = document.createElement('div');
     block.className = 'dim-block';
     block.innerHTML = `
       <div class="dim-row">
         <div class="dim-name">${d.label}</div>
         <div class="dim-bar-bg">
-          <div class="dim-bar-fill" style="width:0%" data-target="${val}%"></div>
+          <div class="dim-bar-fill" style="width:0%;background:${areaColors[d.area]}" data-target="${val}%"></div>
         </div>
         <div class="dim-val">${val}%</div>
       </div>
@@ -791,7 +1042,26 @@ function mostrarInforme() {
   }, 150);
 
   // Narrativa
-  document.getElementById('narrative-text').textContent = generarNarrativa(dims);
+  // Narrativa con secciones visuales
+  const narrativa = generarNarrativa(dims);
+  const narEl = document.getElementById('narrative-text');
+  narEl.innerHTML = '';
+  narrativa.split('\n\n').forEach(parrafo => {
+    if (parrafo.startsWith('──')) {
+      const hdr = document.createElement('div');
+      hdr.style = 'font-size:10px;letter-spacing:2px;text-transform:uppercase;'+
+        'color:var(--gold);margin:18px 0 8px;padding-bottom:5px;'+
+        'border-bottom:1px solid var(--border);font-family:\'Courier Prime\',monospace;'+
+        'font-style:normal;';
+      hdr.textContent = parrafo.replace(/──\s*/g,'').trim();
+      narEl.appendChild(hdr);
+    } else if (parrafo.trim()) {
+      const p = document.createElement('p');
+      p.style = 'margin-bottom:12px;';
+      p.textContent = parrafo;
+      narEl.appendChild(p);
+    }
+  });
 
   // Registro
   const grid = document.getElementById('respuestas-grid');
@@ -976,9 +1246,23 @@ function generarPDF() {
 
     <div class="modal-section">
       <strong>Descripción</strong>
-      Aplicación educativa interactiva basada en el test proyectivo de Hermann Rorschach (1921).
-      Presenta las 10 láminas originales, recoge respuestas mediante categorías y texto libre,
-      y genera un informe exploratorio con perfil psicológico por dimensiones y narrativa.
+      Aplicación educativa interactiva basada en el psicodiagnóstico de Rorschach (1921).
+      Presenta las 10 láminas originales, recoge respuestas mediante categorías clínicas y texto libre,
+      y genera un informe exploratorio estructurado en las tres áreas clásicas: pensamiento,
+      afectividad y relaciones interpersonales. El motor interpretativo integra criterios
+      del Sistema Comprehensivo de Exner y del R-PAS (Mihura &amp; Meyer, 2018).
+    </div>
+
+    <div class="modal-section">
+      <strong>Base bibliográfica</strong>
+      <div style="font-size:11px;line-height:1.9;color:var(--ink2);">
+        <div>· Brinkmann, H. (2014). <em>El Test de Rorschach. Introducción a su estudio y utilización.</em> RIL Editores.</div>
+        <div>· Mihura, J.L. &amp; Meyer, G.J. (Eds.) (2018). <em>Using the Rorschach Performance Assessment System® (R-PAS).</em> Guilford Press.</div>
+        <div>· Bornstein, R.F. &amp; Masling, J.M. (Eds.) (2005). <em>Scoring the Rorschach: Seven Validated Systems.</em> LEA.</div>
+        <div>· Loosli-Usteri, M. (1965). <em>Manuel pratique du test de Rorschach.</em> Hermann, París.</div>
+        <div>· Searls, D. (2017). <em>Las manchas de tinta. Hermann Rorschach, su test y el poder de la visión.</em></div>
+        <div>· Exner, J.E. (1994). <em>El Rorschach. Un sistema comprehensivo.</em> Psimática, Madrid.</div>
+      </div>
     </div>
 
     <div class="modal-section">
@@ -1005,8 +1289,6 @@ function generarPDF() {
   </div>
 </div>
 
-<!-- Botón flotante Acerca de -->
-<button class="btn-acerca" onclick="abrirModal()">ℹ Acerca de...</button>
 
 </body>
 </html>
